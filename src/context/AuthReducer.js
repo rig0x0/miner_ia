@@ -18,6 +18,8 @@ export const authReducer = (state, action) => {
                 isAuthenticated: action.payload.isAuthenticated,
                 user: action.payload.user,
             };
+        case 'SET_ERROR':
+            return { ...state, error: action.payload };
         default:
             return state;
     }

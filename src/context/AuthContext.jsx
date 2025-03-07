@@ -1,4 +1,6 @@
 import React, { createContext, useReducer, useContext, useEffect } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import axios from '../config/axios';  // Importar la instancia de axios
 import { authReducer } from './AuthReducer';
 
 const AuthContext = createContext();
@@ -10,66 +12,90 @@ const initialState = {
 
 export const AuthProvider = ({ children }) => {
     const [state, dispatch] = useReducer(authReducer, initialState);
+    const queryClient = useQueryClient();
+
+    // Función para iniciar sesión usando React Query y axios
+    const loginMutation = useMutation({
+        mutationFn: async (credentials) => {
+            const formData = new FormData();
+            formData.append('username', credentials.username);
+            formData.append('password', credentials.password);
+
+            const response = await axios.post('/auth/token', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            console.log(response)
+            return response.data;
+        },
+
+        onSuccess: (data) => {
+            dispatch({ type: 'LOGIN', payload: { user: data.user } });
+        },
+        onError: (error) => {
+            const errorMessage = error.response?.data?.detail || "Error al iniciar sesión";
+            dispatch({ type: 'SET_ERROR', payload: errorMessage });
+        },
+
+    }
+    );
+
+    // Función para cerrar sesión usando React Query y axios
+    const logoutMutation = useMutation({
+        mutationFn: async () => {
+            await axios.post('/auth/logout');
+        },
+
+        onSuccess: () => {
+            dispatch({ type: 'LOGOUT' });
+        },
+        onError: (error) => {
+            console.error('Error:', error.response?.data?.detail || 'Logout failed');
+        },
+    }
+    );
+
+    // Función para verificar la autenticación usando React Query y axios
+    const checkAuthQuery = useQuery({
+        queryKey: ['checkAuth'],
+        queryFn: async () => {
+            const response = await axios.get('/auth/me');
+            return response.data;
+        },
+        onSuccess: (data) => {
+            dispatch({ type: 'CHECK_AUTH', payload: { isAuthenticated: true, user: data.user } });
+        },
+        onError: () => {
+            dispatch({ type: 'CHECK_AUTH', payload: { isAuthenticated: false, user: null } });
+        },
+        retry: false,  // No reintentar automáticamente en caso de error
+    });
+
+
+    // Función para limpiar errores
+    const clearError = () => {
+        loginMutation.reset();  // Reinicia el estado de la mutación de login
+        logoutMutation.reset(); // Reinicia el estado de la mutación de logout
+        // queryClient.removeQueries(['checkAuth']); // Elimina la consulta de autenticación de la caché
+    };
 
     // Verificar la autenticación al cargar la aplicación
     useEffect(() => {
-        checkAuth();
+        checkAuthQuery.refetch();
     }, []);
 
-    // Función para iniciar sesión
-    const login = async (credentials) => {
-        try {
-            const response = await fetch('/api/login', {
-                method: 'POST',
-                credentials: 'include',  // Incluye las cookies
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(credentials),
-            });
-            if (response.ok) {
-                const data = await response.json();
-                dispatch({ type: 'LOGIN', payload: { user: data.user } });
-            } else {
-                throw new Error('Login failed');
-            }
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    };
-
-    // Función para cerrar sesión
-    const logout = async () => {
-        try {
-            await fetch('/api/logout', {
-                method: 'POST',
-                credentials: 'include',  // Incluye las cookies
-            });
-            dispatch({ type: 'LOGOUT' });
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    };
-
-    // Función para verificar la autenticación
-    const checkAuth = async () => {
-        try {
-            const response = await fetch('/api/me', {
-                credentials: 'include',  // Incluye las cookies
-            });
-            if (response.ok) {
-                const data = await response.json();
-                dispatch({ type: 'CHECK_AUTH', payload: { isAuthenticated: true, user: data.user } });
-            } else {
-                dispatch({ type: 'CHECK_AUTH', payload: { isAuthenticated: false, user: null } });
-            }
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    };
-
     return (
-        <AuthContext.Provider value={{ ...state, login, logout, checkAuth }}>
+        <AuthContext.Provider
+            value={{
+                ...state,
+                login: loginMutation.mutate,
+                logout: logoutMutation.mutate,
+                isLoading: loginMutation.isPending || logoutMutation.isPending || checkAuthQuery.isFetching,
+                error: loginMutation.error || logoutMutation.error || checkAuthQuery.error,
+                clearError  // Función para limpiar errores
+            }}
+        >
             {children}
         </AuthContext.Provider>
     );
