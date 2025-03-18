@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 
 export const Login = () => {
 
-    const { login, isLoading, error, clearError } = useAuth();
+    const { login, isLoadingLogin, errorLogin, clearError } = useAuth();
     const [showAlert, setShowAlert] = useState(false)
 
     const {
@@ -19,12 +19,12 @@ export const Login = () => {
     };
 
     useEffect(() => {
-        console.log(error)
-        if (error) {
-            if (error.code === "ERR_NETWORK") {
+        console.log(errorLogin)
+        if (errorLogin) {
+            if (errorLogin.code === "ERR_NETWORK") {
                 setShowAlert(true);
             }
-            else if (error.status === 401) {
+            else if (errorLogin.status === 401) {
                 setShowAlert(true);
             } else {
                 setShowAlert(false);
@@ -32,7 +32,7 @@ export const Login = () => {
         } else {
             setShowAlert(false);
         }
-    }, [error]);
+    }, [errorLogin]);
 
     return (
         <>
@@ -105,19 +105,19 @@ export const Login = () => {
                                             style={{ transition: "opacity 0.3s ease-in-out" }}
                                         >
                                             <i className="fas fa-exclamation-circle me-2"></i> {/* Ícono de advertencia */}
-                                            {error ? (
-                                                error.status === 401 ? (
-                                                    error.response.data.detail
-                                                ) : error.code === "ERR_NETWORK" ? (
+                                            {errorLogin ? (
+                                                errorLogin.status === 401 ? (
+                                                    errorLogin.response.data.detail
+                                                ) : errorLogin.code === "ERR_NETWORK" ? (
                                                     "Hubo un error de conexión con el servidor, Intentelo de nuevo más tarde."
                                                 ) : null
                                             ) : null}
                                         </p>
                                     )}
                                     {/* Botón de login */}
-                                    <button type="submit" className="btn btn-dark w-100 mt-3 shadow-sm" disabled={isLoading}>
+                                    <button type="submit" className="btn btn-dark w-100 mt-3 shadow-sm" disabled={isLoadingLogin}>
                                         {
-                                            isLoading ? ("Ingresando...") : ("Ingresar")
+                                            isLoadingLogin ? ("Ingresando...") : ("Ingresar")
                                         }
                                     </button>
                                 </form>

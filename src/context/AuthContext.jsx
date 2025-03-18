@@ -91,8 +91,12 @@ export const AuthProvider = ({ children }) => {
                 ...state,
                 login: loginMutation.mutate,
                 logout: logoutMutation.mutate,
-                isLoading: loginMutation.isPending || logoutMutation.isPending || checkAuthQuery.isFetching,
-                error: loginMutation.error || logoutMutation.error || checkAuthQuery.error,
+                isLoadingLogin: loginMutation.isPending,
+                isLoadingLogout: logoutMutation.isPending,
+                isLoadingCheckAuth: loginMutation.isPending,
+                errorLogin: loginMutation.error,
+                errorLogout: logoutMutation.error,
+                errorCheckAuth: checkAuthQuery.error,
                 clearError  // Función para limpiar errores
             }}
         >
