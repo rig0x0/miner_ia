@@ -2,6 +2,7 @@ import React from 'react'
 import { Sidebar } from '../components/Sidebar'
 import { Topbar } from '../components/Topbar'
 import { CreateUser } from '../components/UsersComponents/CreateUser'
+import { ViewUser } from '../components/UsersComponents/ViewUser'
 
 export const Users = () => {
   return (
@@ -9,8 +10,8 @@ export const Users = () => {
         <main class="main" id="top">
             <Sidebar />
             <Topbar />
-            <div className="content ">
-                
+            <div className="content">
+                <ViewUser />
             </div>
         </main>
     </>

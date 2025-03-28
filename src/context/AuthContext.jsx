@@ -2,6 +2,7 @@ import React, { createContext, useReducer, useContext, useEffect } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from '../config/axios';  // Importar la instancia de axios
 import { authReducer } from './AuthReducer';
+import { useNavigate } from 'react-router';
 
 const AuthContext = createContext();
 
@@ -13,6 +14,8 @@ const initialState = {
 export const AuthProvider = ({ children }) => {
     const [state, dispatch] = useReducer(authReducer, initialState);
     const queryClient = useQueryClient();
+
+    const navigate = useNavigate();
 
     // Función para iniciar sesión usando React Query y axios
     const loginMutation = useMutation({
@@ -27,11 +30,15 @@ export const AuthProvider = ({ children }) => {
                 }
             });
             console.log(response)
-            return response.data;
+
+            return response.data;   
         },
 
         onSuccess: (data) => {
             dispatch({ type: 'LOGIN', payload: { user: data.user } });
+
+            // Pendiente a cambiar a /dashboard
+            navigate("/usuarios", { replace: true });
         },
         onError: (error) => {
             const errorMessage = error.response?.data?.detail || "Error al iniciar sesión";
