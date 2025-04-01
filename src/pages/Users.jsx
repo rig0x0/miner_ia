@@ -7,13 +7,13 @@ import { ViewUser } from '../components/UsersComponents/ViewUser'
 export const Users = () => {
   return (
     <>
-        <main class="main" id="top">
-            <Sidebar />
-            <Topbar />
-            <div className="content">
-                <ViewUser />
-            </div>
-        </main>
+      <main class="main" id="top">
+        <Sidebar />
+        <Topbar />
+        <div className="content container">
+            <ViewUser />
+        </div>
+      </main>
     </>
   )
 }
