@@ -72,7 +72,7 @@ export const Table = ({ data, columns, placeholder, addButton }) => {
 
             {
                 <>
-                    <div className='table-responsive'>
+                    <div className='table-responsive '>
                         <table className='text-center table table-hover table-sm bg-white fs-9 mb-3 mt-4'>
                             <thead className='text-center'>
                                 {
@@ -107,7 +107,7 @@ export const Table = ({ data, columns, placeholder, addButton }) => {
                                     ))
                                 }
                             </thead>
-                            <tbody>
+                            <tbody className=''>
                                 {table.getRowModel().rows.map(row => (
                                     <tr
                                         className="text-black odd:bg-gray-100 even:bg-white hover:bg-gray-200 transition-all border-b border-gray-300"

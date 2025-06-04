@@ -622,7 +622,7 @@ export const ViewUser = () => {
             </ul>
 
             {/* Tabla de usuarios */}
-            <div>
+            <div className=''>
                 <Table
                     placeholder={"Buscar por Nombre, ID o Correo"}
                     data={users}

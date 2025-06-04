@@ -1,0 +1,145 @@
+{
+  "topbar": {
+    "dashboard": "Dashboard",
+    "language": "Language",
+    "logout": "Logout"
+  },
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "users": "Users",
+    "viewUsers": "View Users",
+    "assays": "Assays",
+    "projections": "Projections",
+    "createReport": "Create Report",
+    "logout": "Logout"
+  },
+  "supervisorDashboard": {
+    "title": "Comparative cards by element",
+    "filterButton": "Filter",
+    "clearFilterButton": "Clear Filter",
+    "startDateLabel": "Start Date",
+    "endDateLabel": "End Date",
+    "filterTitle": "Date Filter",
+    "cards": {
+      "recuperacion": "Recovery",
+      "ley": "Grade",
+      "contenido": "Content"
+    },
+    "table": {
+      "fecha": "Date",
+      "turno": "Shift",
+      "tipoEnsaye": "Assay Type",
+      "nombreUsuario": "User Name",
+      "cabezaGeneral": "Head Grade",
+      "acciones": "Actions",
+      "verEnsaye": "View Assay"
+    },
+    "graphSection": {
+      "title": "Data by Circuit",
+      "subtitle": "Detail of elements by stage of the circuit from the last 7 uploaded assays",
+      "tabs": {
+        "recuperaciones": "Recoveries",
+        "contenidos": "Contents",
+        "leyes": "Grades"
+      }
+    },
+    "loading": "Loading Information..."
+  },
+  "detailsEnsaye": {
+    "breadcrumb": "Dashboard",
+    "title": "Assay Details",
+    "badge": "{{tipo}}",
+    "fecha": "Date",
+    "cards": {
+      "turno": "Shift",
+      "moliendaHumeda": "Wet Grinding",
+      "humedad": "Moisture",
+      "cabezaGeneral": "Head Grade"
+    },
+    "seccionCircuito": {
+      "titulo": "Data by Circuit",
+      "subtitulo": "Element details by stage of the circuit",
+      "vistaTabla": "Table View",
+      "vistaGraficos": "Chart View",
+      "porEtapa": "{{elemento}} by Stage"
+    },
+    "tabla": {
+      "etapa": "Stage"
+    },
+    "loading": "Loading...",
+    "error": "Error loading assay"
+  },
+  "createUser": {
+    "title": "Add New User",
+    "email": "Email Address",
+    "name": "Name",
+    "role": "Select Role",
+    "roles": {
+      "admin": "ADMINISTRATOR",
+      "external": "External",
+      "organizational": "Organizational"
+    },
+    "password": "Password",
+    "cancel": "Cancel",
+    "create": "Create User"
+  },
+  "viewUsers": {
+  "title": "Registered Users",
+  "registerUserButton": "Register New User",
+  "table": {
+    "id": "ID",
+    "email": "Email",
+    "name": "User Name",
+    "role": "User Role",
+    "actions": "Actions",
+    "edit": "Edit",
+    "delete": "Delete"
+  },
+  "modal": {
+    "registerTitle": "Register New User",
+    "editTitle": "Edit User",
+    "deleteTitle": "Delete User",
+    "confirmDelete": "Are you sure you want to delete this user?",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete"
+  },
+  "form": {
+    "emailLabel": "Email",
+    "emailPlaceholder": "name@example.com",
+    "emailRequired": "Email is required",
+    "emailInvalid": "Invalid email",
+    "nameLabel": "User Name",
+    "namePlaceholder": "Enter the user's name",
+    "nameRequired": "User name is required",
+    "roleLabel": "User Role",
+    "roleRequired": "User role is required",
+    "roleSelect": "Select User Role",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Password",
+    "passwordRequired": "Password is required",
+    "passwordMinLength": "Password must be at least 6 characters",
+    "confirmPasswordLabel": "Confirm Password",
+    "confirmPasswordPlaceholder": "Confirm Password",
+    "confirmPasswordRequired": "You must repeat the password",
+    "confirmPasswordMatch": "Passwords do not match"
+  },
+  "roles": {
+    "1": "General Supervisor",
+    "2": "Plant Supervisor",
+    "3": "Assayer Supervisor",
+    "4": "Assayer"
+  },
+  "loading": "Loading information...",
+  "error": "Error loading users",
+  "notifications": {
+    "createSuccess": "The user has been successfully registered in the system.",
+    "createError": "Error creating user: ",
+    "editSuccess": "User with ID: {{id}} has been successfully edited.",
+    "editError": "Error editing user: ",
+    "deleteSuccess": "The user has been deleted from the system.",
+    "deleteError": "Error deleting user: "
+  }
+}
+
+}

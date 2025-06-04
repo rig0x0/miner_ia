@@ -1,3 +1,5 @@
+import './i18n'; // <--- Importación del sistema de traducción
+
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 

@@ -1,0 +1,145 @@
+{
+  "topbar": {
+    "dashboard": "Tablero",
+    "language": "Idioma",
+    "logout": "Salir"
+  },
+  "sidebar": {
+    "dashboard": "Tablero",
+    "users": "Usuarios",
+    "viewUsers": "Ver Usuarios",
+    "assays": "Ensayes",
+    "projections": "Proyecciones",
+    "createReport": "Crear Reporte",
+    "logout": "Salir"
+  },
+"supervisorDashboard": {
+    "title": "Tarjetas comparativas por elemento",
+    "filterButton": "Filtrar",
+    "clearFilterButton": "Limpiar Filtro",
+    "startDateLabel": "Fecha Inicio",
+    "endDateLabel": "Fecha Fin",
+    "filterTitle": "Filtro por fechas",
+    "cards": {
+      "recuperacion": "Recuperación",
+      "ley": "Ley",
+      "contenido": "Contenido"
+    },
+    "table": {
+      "fecha": "Fecha",
+      "turno": "Turno",
+      "tipoEnsaye": "Tipo de Ensaye",
+      "nombreUsuario": "Nombre de Usuario",
+      "cabezaGeneral": "Cabeza General",
+      "acciones": "Acciones",
+      "verEnsaye": "Ver ensaye"
+    },
+    "graphSection": {
+      "title": "Datos por Circuito",
+      "subtitle": "Detalle de elementos por cada etapa del circuito de los últimos 7 ensayes subidos",
+      "tabs": {
+        "recuperaciones": "Recuperaciones",
+        "contenidos": "Contenidos",
+        "leyes": "Leyes"
+      }
+    },
+    "loading": "Cargando Información..."
+  },
+  "detailsEnsaye": {
+    "breadcrumb": "Tablero",
+    "title": "Detalles del Ensaye",
+    "badge": "{{tipo}}",
+    "fecha": "Fecha",
+    "cards": {
+      "turno": "Turno",
+      "moliendaHumeda": "Molienda Húmeda",
+      "humedad": "Humedad",
+      "cabezaGeneral": "Cabeza General"
+    },
+    "seccionCircuito": {
+      "titulo": "Datos por Circuito",
+      "subtitulo": "Detalle de elementos por cada etapa del circuito",
+      "vistaTabla": "Vista de Tabla",
+      "vistaGraficos": "Vista de Gráficos",
+      "porEtapa": "{{elemento}} por Etapa"
+    },
+    "tabla": {
+      "etapa": "Etapa"
+    },
+    "loading": "Cargando...",
+    "error": "Error al cargar el ensaye"
+  },
+  "createUser": {
+    "title": "Agregar Nuevo Usuario",
+    "email": "Correo Electrónico",
+    "name": "Nombre",
+    "role": "Seleccionar Rol",
+    "roles": {
+      "admin": "ADMINISTRADOR",
+      "external": "external",
+      "organizational": "organizational"
+    },
+    "password": "Contraseña",
+    "cancel": "Cancelar",
+    "create": "Crear Usuario"
+  },
+  "viewUsers": {
+  "title": "Usuarios Registrados",
+  "registerUserButton": "Registrar Nuevo Usuario",
+  "table": {
+    "id": "ID",
+    "email": "Correo Electrónico",
+    "name": "Nombre del Usuario",
+    "role": "Rol del Usuario",
+    "actions": "Acciones",
+    "edit": "Editar",
+    "delete": "Eliminar"
+  },
+  "modal": {
+    "registerTitle": "Registrar Nuevo Usuario",
+    "editTitle": "Editar Usuario",
+    "deleteTitle": "Eliminar Usuario",
+    "confirmDelete": "¿Está seguro de que desea eliminar este usuario?",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "delete": "Eliminar"
+  },
+  "form": {
+    "emailLabel": "Correo Electrónico",
+    "emailPlaceholder": "name@example.com",
+    "emailRequired": "El email es obligatorio",
+    "emailInvalid": "Email inválido",
+    "nameLabel": "Nombre del Usuario",
+    "namePlaceholder": "Escribe el nombre del usuario",
+    "nameRequired": "El nombre del usuario es obligatorio",
+    "roleLabel": "Rol del Usuario",
+    "roleRequired": "El rol del usuario es obligatorio",
+    "roleSelect": "Seleccione el Rol del Usuario",
+    "passwordLabel": "Escriba la Contraseña",
+    "passwordPlaceholder": "Contraseña",
+    "passwordRequired": "La contraseña es obligatoria",
+    "passwordMinLength": "La contraseña debe tener al menos 6 caracteres",
+    "confirmPasswordLabel": "Confirme la Contraseña",
+    "confirmPasswordPlaceholder": "Confirmar Contraseña",
+    "confirmPasswordRequired": "Debe repetir la contraseña",
+    "confirmPasswordMatch": "Las contraseñas no coinciden"
+  },
+  "roles": {
+    "1": "Supervisor General",
+    "2": "Supervisor de Planta",
+    "3": "Supervisor de Ensayista",
+    "4": "Ensayista"
+  },
+  "loading": "Cargando Información...",
+  "error": "Error al cargar los usuarios",
+  "notifications": {
+    "createSuccess": "El usuario se ha registrado en el sistema satisfactoriamente.",
+    "createError": "Error al crear el usuario: ",
+    "editSuccess": "El usuario con ID: {{id}}, se ha editado satisfactoriamente.",
+    "editError": "Error al intentar editar al usuario: ",
+    "deleteSuccess": "El usuario ha sido eliminado del sistema",
+    "deleteError": "Error al intentar eliminar al usuario: "
+  }
+}
+
+}
