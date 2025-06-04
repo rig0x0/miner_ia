@@ -11,7 +11,7 @@ export const Users = () => {
         <Sidebar />
         <Topbar />
         <div className="content container">
-            <ViewUser />
+          <ViewUser />
         </div>
       </main>
     </>

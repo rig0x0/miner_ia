@@ -167,6 +167,7 @@ export const ViewUser = () => {
 
     const getUsers = async () => {
         const { data } = await clienteAxios.get('/user/')
+        console.log(data)
         return data
     }
 
@@ -176,11 +177,13 @@ export const ViewUser = () => {
     });
 
     const onSubmit = (data) => {
+        // console.log(data)
         const newUser = {
             email: data.username,
             name: data.name,
             rol_id: data.rol_id,
             password: data.password,
+            active: true
         }
 
         registerUserMutation.mutate(newUser)
@@ -326,7 +329,9 @@ export const ViewUser = () => {
         <>
             {/* Register User */}
             <CustomModal isOpen={modalOpen} toggle={toggleModal} modalTitle={"Registrar Nuevo Usuario"}>
+                
                 <form onSubmit={handleSubmit(onSubmit)}>
+
                     <div class="mb-3">
                         <label className='form-label'>Correo Electrónico</label>
                         <input
@@ -347,6 +352,7 @@ export const ViewUser = () => {
                             </div>
                         )}
                     </div>
+
                     <div class="mb-3">
                         <label className='form-label'>Nombre del Usuario</label>
                         <input
@@ -423,6 +429,7 @@ export const ViewUser = () => {
                             </div>
                         )}
                     </div>
+
                     <div className='row'>
                         <div className="col-6">
                             <button type="button" className="btn btn-secondary w-100" onClick={toggleModal}>Cancelar</button>
