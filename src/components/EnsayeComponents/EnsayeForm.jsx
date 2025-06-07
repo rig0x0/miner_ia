@@ -10,6 +10,14 @@ export const EnsayeForm = () => {
 
   const navigate = useNavigate();
 
+  const getTodayDate = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0'); // Los meses son 0-indexados
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
   const [paso, setPaso] = useState(1);
   const [turno, setTurno] = useState(null);
   const [tipoLaboratorio, setTipoLaboratorio] = useState('');
@@ -17,7 +25,7 @@ export const EnsayeForm = () => {
     molienda_humeda: '',
     humedad: '',
     cabeza_general: '',
-    fecha: new Date().toISOString().split('T')[0],
+    fecha: getTodayDate(),
   });
   const [circuitos, setCircuitos] = useState([
     { etapa: "Cabeza Flotacion", elementos: Array(6).fill().map((_, i) => ({ elemento_id: i + 1, existencia_teorica: '' })) },
@@ -83,6 +91,7 @@ export const EnsayeForm = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    console.log(e.target.value)
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
@@ -509,7 +518,7 @@ export const EnsayeForm = () => {
               finalIcon = 'warning';
             }
 
-            
+
 
 
             // Actualizamos el Swal manteniendo el HTML actualizado
@@ -520,7 +529,7 @@ export const EnsayeForm = () => {
               showConfirmButton: true,
               confirmButtonText: 'Listo',
             });
-            
+
             socket.close();
 
             navigate('/ensaye');
@@ -722,9 +731,17 @@ export const EnsayeForm = () => {
                     step={field.step} min="0" max={field.max || undefined} required />
                 </div>
               ))}
-              <div className="col-md-12"> {/* Fecha ocupa todo el ancho para mejor layout en algunos casos */}
+              <div className="col-md-12">
                 <label className="form-label fw-semibold">Fecha <span className="text-danger">*</span></label>
-                <input type="date" className="form-control form-control-lg" name="fecha" value={formData.fecha} onChange={handleInputChange} required />
+                <input
+                  type="date"
+                  className="form-control form-control-lg"
+                  name="fecha"
+                  value={formData.fecha}
+                  onChange={handleInputChange}
+                  max={getTodayDate()} // No permite seleccionar fechas futuras
+                  required
+                />
               </div>
             </div>
             <div className="d-flex justify-content-between mt-5">

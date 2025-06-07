@@ -1,0 +1,16 @@
+.ensaye-link {
+  text-decoration: none; /* evita subrayado del enlace */
+  color: inherit; /* mantiene colores originales */
+}
+
+.ensaye-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+.ensaye-link:hover .ensaye-card {
+  transform: translateY(-4px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 128, 0, 0.2); /* sombra verde suave */
+  border-color: #198754; /* verde Bootstrap */
+  text-decoration: none;
+}

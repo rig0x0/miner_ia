@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form'
 import { throwNotification } from '../../helpers/ThrowNotification'
 import { ToastContainer } from 'react-toastify'
 import { Spinner } from 'reactstrap'
+import { ServerSideTable } from '../ServerSideTable'
 
 export const ViewUser = () => {
 
@@ -165,16 +166,34 @@ export const ViewUser = () => {
         },
     });
 
-    const getUsers = async () => {
-        const { data } = await clienteAxios.get('/user/')
-        console.log(data)
-        return data
+    // const getUsers = async () => {
+    //     const { data } = await clienteAxios.get('/user/')
+    //     console.log(data)
+    //     return data
+    // }
+
+    const fetchUsers = async (params) => {
+        const queryParams = new URLSearchParams();
+
+        // Solo agregar parámetros definidos
+        Object.entries(params).forEach(([key, value]) => {
+            if (value !== undefined && value !== null && value !== '') {
+                queryParams.append(key, value);
+            }
+        });
+
+        const response = await clienteAxios(`/user/?${queryParams.toString()}`);
+        console.log(response)
+        if (!response.status === 200) {
+            throw new Error('Error al cargar los usuarios');
+        }
+        return response;
     }
 
-    const { data: users, error, isLoading } = useQuery({
-        queryKey: ["users"],
-        queryFn: getUsers,
-    });
+    // const { data: users, error, isLoading } = useQuery({
+    //     queryKey: ["users"],
+    //     queryFn: getUsers,
+    // });
 
     const onSubmit = (data) => {
         // console.log(data)
@@ -218,14 +237,12 @@ export const ViewUser = () => {
 
     const button = {
         text: 'Registrar Nuevo Usuario',
-        className: 'btn btn-primary w-100',
-        icon: {
-            available: true,
-            className: 'fas fa-plus me-2'
-        },
+        // No necesitas className aquí, ya que ServerSideTable tiene su propio estilo
         onClick: () => {
             setModalOpen(true)
-        }
+        },
+        // ¡LA CORRECCIÓN! Pasa el ícono como un elemento JSX renderizable
+        icon: <i className="fas fa-plus me-2" />
     }
 
     const columns = [
@@ -292,6 +309,33 @@ export const ViewUser = () => {
         },
     ]
 
+    const filtersConfig = [
+        {
+            id: 'user_id',
+            label: 'Buscar por ID de usuario',
+            type: 'text',
+            placeholder: 'Ingresa el ID del usuario'
+        },
+        {
+            id: 'name',
+            label: 'Buscar por nombre de usuario',
+            type: 'text',
+            placeholder: 'Ingresa el nombre del usuario'
+        },
+        {
+            id: 'rol',
+            label: 'Selecciona un rol',
+            type: 'select',
+            options: [
+                { value: 1, label: 'Supervisor General' },
+                { value: 2, label: 'Supervisor de Planta' },
+                { value: 3, label: 'Supervisor de Ensayista' },
+                { value: 4, label: 'Ensayista' },
+            ]
+        }
+    ];
+
+
     useEffect(() => {
         if (userSelected.email != '') {
             console.log('entre')
@@ -303,33 +347,10 @@ export const ViewUser = () => {
         }
     }, [userSelected, resetEdit]);
 
-    if (isLoading) {
-        return (
-            <div className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
-                <div className="text-center">
-                    <Spinner
-                        className="mx-auto"
-                        style={{
-                            width: '5rem',
-                            height: '5rem',
-                            borderWidth: '0.8rem',
-                        }}
-                        color="primary"
-                    />
-                    <p className="mt-3" style={{ fontSize: '1.2rem', color: '#333' }}>Cargando Información...</p>
-                </div>
-            </div>
-        );
-    }
-
-
-    if (error) return <p>Error: {error.message}</p>;
-
     return (
         <>
             {/* Register User */}
-            <CustomModal isOpen={modalOpen} toggle={toggleModal} modalTitle={"Registrar Nuevo Usuario"}>
-                
+            <CustomModal isOpen={modalOpen} toggle={toggleModal} modalTitle={"Registrar Nuevo Usuario"} >
                 <form onSubmit={handleSubmit(onSubmit)}>
 
                     <div class="mb-3">
@@ -613,33 +634,32 @@ export const ViewUser = () => {
                 </div>
             </CustomModal>
 
+            <div className="container py-4">
+                <h1 className="h3 fw-bold">Usuarios</h1>
+                <p className="text-muted">Gestiona los usuarios de la plataforma</p>
+                {/* Tabla de usuarios */}
+                <div>
+                    <div className="card shadow-sm">
+                        <div className="card-header">
+                            <ServerSideTable
+                                columns={columns}
+                                fetchData={fetchUsers}
+                                queryKey="users"
+                                initialPageSize={10}
+                                filtersConfig={filtersConfig}
+                                enableDateFilter={false}
+                                enableGlobalSearch={false}
+                                addButton={button}
 
-            <div className="mb-4">
-                <div className="row">
-                    <div className="col-auto">
-                        <h2 className="mb-0">Usuarios</h2>
+                            />
+                        </div>
                     </div>
-                </div>
-            </div>
-            <ul class="nav nav-links mb-3 mb-lg-2 mx-n3">
-                <li class="nav-item"><a class="nav-link active" aria-current="page" href="#"><span>Todos los usuarios </span><span class="text-body-tertiary fw-semibold">(5)</span></a></li>
-                <li class="nav-item"><a class="nav-link" href="#"><span>Supervisores de Planta </span><span class="text-body-tertiary fw-semibold">(2)</span></a></li>
-                <li class="nav-item"><a class="nav-link" href="#"><span>Supervisor </span><span class="text-body-tertiary fw-semibold">(1)</span></a></li>
-                <li class="nav-item"><a class="nav-link" href="#"><span>Ensayistas </span><span class="text-body-tertiary fw-semibold">(2)</span></a></li>
-            </ul>
 
-            {/* Tabla de usuarios */}
-            <div>
-                <Table
-                    placeholder={"Buscar por Nombre, ID o Correo"}
-                    data={users}
-                    columns={columns}
-                    addButton={button}
+                </div>
+
+                <ToastContainer
                 />
             </div>
-
-            <ToastContainer
-            />
         </>
     )
 }

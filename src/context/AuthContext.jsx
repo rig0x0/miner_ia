@@ -1,22 +1,24 @@
-import React, { createContext, useReducer, useContext, useEffect } from 'react';
+import React, { createContext, useReducer, useContext, useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from '../config/axios';  // Importar la instancia de axios
 import { authReducer } from './AuthReducer';
 import { useNavigate } from 'react-router';
+import clienteAxios from '../config/axios';
 
 const AuthContext = createContext();
 
 const initialState = {
     isAuthenticated: false,
     user: null,
+    isLoadingCheckAuth: true, // <-- importante para controlar el spinner
+    error: null
 };
 
 export const AuthProvider = ({ children }) => {
     const [state, dispatch] = useReducer(authReducer, initialState);
     const queryClient = useQueryClient();
-
     const navigate = useNavigate();
-
+    const [isInitialized, setIsInitialized] = useState(false);
     // Función para iniciar sesión usando React Query y axios
     const loginMutation = useMutation({
         mutationFn: async (credentials) => {
@@ -24,39 +26,64 @@ export const AuthProvider = ({ children }) => {
             formData.append('username', credentials.username);
             formData.append('password', credentials.password);
 
+            // No necesitamos la respuesta aquí, solo saber si fue exitosa
             const response = await axios.post('/auth/token', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
+                headers: { 'Content-Type': 'multipart/form-data' }
             });
-            console.log(response)
 
-            return response.data;   
+            return response.data
+        },
+        // --- CORRECCIÓN CON ASYNC/AWAIT ---
+        onSuccess: async (data) => {
+            console.log(data)
+            console.log("Login exitoso en el backend. Invalidando query para obtener datos de usuario...");
+
+            // 1. USA AWAIT: Espera a que la query 'checkAuth' se complete después de ser invalidada.
+            // Esto forza a la aplicación a esperar a que la llamada a /auth/me termine.
+            await queryClient.invalidateQueries({ queryKey: ['checkAuth'] });
+
+            // 2. SOLO DESPUÉS de que los datos del usuario se hayan recargado, navega.
+            console.log("Datos del usuario actualizados en el estado. Redirigiendo...");
+            switch (data.rol) {
+                case "Supervisor General":
+                    navigate("/dashboard", { replace: true });
+                    break;
+                case "Supervisor de Planta":
+                    navigate("/dashboard", { replace: true });
+                case "Supervisor de Ensayista":
+                    navigate("/ensayes", { replace: true });
+                    break;
+                case "Ensayista":
+                    navigate("/ensaye", { replace: true });
+                default:
+                    break;
+            }
+
         },
 
-        onSuccess: (data) => {
-            dispatch({ type: 'LOGIN', payload: { user: data.user } });
-
-            // Pendiente a cambiar a /dashboard
-            navigate("/usuarios", { replace: true });
-        },
         onError: (error) => {
             const errorMessage = error.response?.data?.detail || "Error al iniciar sesión";
             dispatch({ type: 'SET_ERROR', payload: errorMessage });
         },
-
-    }
-    );
+    });
 
     // Función para cerrar sesión usando React Query y axios
     const logoutMutation = useMutation({
         mutationFn: async () => {
-            await axios.post('/auth/logout');
+            const { data } = await clienteAxios.post('/auth/logout');
+            return data
         },
 
-        onSuccess: () => {
+        onSuccess: (data) => {
+            console.log(data)
             dispatch({ type: 'LOGOUT' });
+            // 2. Limpia toda la caché de React Query para eliminar datos del usuario anterior
+            queryClient.clear();
+
+            // 3. Redirige al usuario a la página de login
+            navigate("/login", { replace: true });
         },
+
         onError: (error) => {
             console.error('Error:', error.response?.data?.detail || 'Logout failed');
         },
@@ -67,16 +94,20 @@ export const AuthProvider = ({ children }) => {
     const checkAuthQuery = useQuery({
         queryKey: ['checkAuth'],
         queryFn: async () => {
-            const response = await axios.get('/auth/me');
-            return response.data;
+            const { data } = await clienteAxios.get('/auth/me');
+            console.log(data)
+            return data;
         },
         onSuccess: (data) => {
-            dispatch({ type: 'CHECK_AUTH', payload: { isAuthenticated: true, user: data.user } });
+            console.log(data)
+            dispatch({ type: 'LOGIN', payload: { isAuthenticated: true, user: data.user } });
         },
-        onError: () => {
-            dispatch({ type: 'CHECK_AUTH', payload: { isAuthenticated: false, user: null } });
+        onError: (error) => {
+            console.log(error)
+            dispatch({ type: 'LOGOUT' });
         },
         retry: false,  // No reintentar automáticamente en caso de error
+        refetchOnWindowFocus: false
     });
 
 
@@ -87,20 +118,34 @@ export const AuthProvider = ({ children }) => {
         // queryClient.removeQueries(['checkAuth']); // Elimina la consulta de autenticación de la caché
     };
 
-    // Verificar la autenticación al cargar la aplicación
     useEffect(() => {
-        checkAuthQuery.refetch();
-    }, []);
+        if (checkAuthQuery.isSuccess && checkAuthQuery.data?.user) {
+            dispatch({
+                type: 'LOGIN',
+                payload: {
+                    isAuthenticated: true,
+                    user: checkAuthQuery.data.user
+                }
+            });
+            setIsInitialized(true);
+        }
+
+        if (checkAuthQuery.isError) {
+            dispatch({ type: 'LOGOUT' });
+            setIsInitialized(true);
+        }
+    }, [checkAuthQuery.isSuccess, checkAuthQuery.isError, checkAuthQuery.data]);
 
     return (
         <AuthContext.Provider
             value={{
                 ...state,
+                isInitialized,
                 login: loginMutation.mutate,
                 logout: logoutMutation.mutate,
                 isLoadingLogin: loginMutation.isPending,
                 isLoadingLogout: logoutMutation.isPending,
-                isLoadingCheckAuth: loginMutation.isPending,
+                // isLoadingCheckAuth: checkAuthQuery.isLoading,
                 errorLogin: loginMutation.error,
                 errorLogout: logoutMutation.error,
                 errorCheckAuth: checkAuthQuery.error,
@@ -110,6 +155,8 @@ export const AuthProvider = ({ children }) => {
             {children}
         </AuthContext.Provider>
     );
+
+
 };
 
 // Hook personalizado para usar el contexto de autenticación

@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import axios from 'axios';
+import { CustomSpinner } from './CustomSpinner';
+import { useDebounce } from '../helpers/hooks/useDebounce'; // Asegúrate que la ruta sea correcta
 
 export const ServerSideTable = ({
   columns,
@@ -19,16 +20,48 @@ export const ServerSideTable = ({
   // Estado para paginación
   const [currentPage, setCurrentPage] = useState(0);
   const [pageSize, setPageSize] = useState(initialPageSize);
-  
-  // Estado para filtros
-  const [filters, setFilters] = useState({
-    globalSearch: '',
-    dateRange: { startDate: null, endDate: null },
-    ...Object.fromEntries(filtersConfig.map(filter => [filter.id, '']))
+
+  // --> CAMBIO 1: Estado unificado para TODOS los filtros (selects, fechas, etc.)
+  const [filters, setFilters] = useState(() => {
+    const initialFilters = {
+      dateRange: { startDate: null, endDate: null },
+      ...Object.fromEntries(filtersConfig.map(filter => [filter.id, '']))
+    };
+    if (enableGlobalSearch) {
+      initialFilters.globalSearch = '';
+    }
+    return initialFilters;
   });
 
-  // Construir parámetros de consulta
-  const buildQueryParams = () => {
+  // --> CAMBIO 2: Estado local solo para los valores de los inputs de texto
+  const [textInputValues, setTextInputValues] = useState(() => {
+    const initialTextFilters = {};
+    filtersConfig.forEach(filter => {
+      if (filter.type !== 'select') { // Asumimos que todo lo que no es 'select' es texto
+        initialTextFilters[filter.id] = '';
+      }
+    });
+    if (enableGlobalSearch) {
+      initialTextFilters.globalSearch = '';
+    }
+    return initialTextFilters;
+  });
+
+  // --> CAMBIO 3: Aplicamos debounce al objeto completo de inputs de texto
+  const debouncedTextFilters = useDebounce(textInputValues, 500);
+
+  // --> CAMBIO 4: Un useEffect para sincronizar los valores "debounced" con el estado de filtros principal
+  useEffect(() => {
+    setFilters(prevFilters => ({
+      ...prevFilters,
+      ...debouncedTextFilters
+    }));
+    setCurrentPage(0); // Resetea la página cuando el filtro de texto cambia
+  }, [debouncedTextFilters]);
+
+
+  // Construir parámetros de consulta (sin cambios)
+  const buildQueryParams = useCallback(() => {
     const params = {
       skip: currentPage,
       limit: pageSize
@@ -50,17 +83,17 @@ export const ServerSideTable = ({
     });
 
     return params;
-  };
+  }, [currentPage, pageSize, filters, enableGlobalSearch, enableDateFilter, filtersConfig]);
 
-  // Consulta principal
+  // --> CAMBIO 5: `useQuery` ahora depende del estado de filtros principal `filters`
   const { data: apiResponse, isLoading, isError, error, isFetching } = useQuery({
-    queryKey: [queryKey, currentPage, pageSize, filters],
+    queryKey: [queryKey, currentPage, pageSize, filters], // Limpio y centralizado
     queryFn: () => fetchData(buildQueryParams()),
     keepPreviousData: true,
     staleTime: 5 * 60 * 1000
   });
 
-  // Extraer datos de la respuesta
+  // Extraer datos (sin cambios)
   const tableData = apiResponse?.data?.data || [];
   const totalCount = apiResponse?.data?.totalCount || 0;
   const pageCount = Math.ceil(totalCount / pageSize);
@@ -75,7 +108,16 @@ export const ServerSideTable = ({
     setCurrentPage(0);
   };
 
-  const handleFilterChange = (filterId, value) => {
+  // --> CAMBIO 6: Un solo manejador para todos los inputs de texto
+  const handleTextInputChange = (filterId, value) => {
+    setTextInputValues(prev => ({
+      ...prev,
+      [filterId]: value
+    }));
+  };
+
+  // --> CAMBIO 7: Manejadores separados para inputs instantáneos (select, date)
+  const handleInstantFilterChange = (filterId, value) => {
     setFilters(prev => ({
       ...prev,
       [filterId]: value
@@ -83,18 +125,29 @@ export const ServerSideTable = ({
     setCurrentPage(0);
   };
 
-  const handleDateChange = (dates) => {
-    setFilters(prev => ({
-      ...prev,
-      dateRange: {
-        startDate: dates?.[0] || null,
-        endDate: dates?.[1] || null
-      }
-    }));
+  const handleDateChange = (field, date) => {
+    // Si al limpiar la fecha de inicio, la de fin es anterior, limpiamos también la de fin.
+    if (field === 'startDate' && date && filters.dateRange.endDate && date > filters.dateRange.endDate) {
+      setFilters(prev => ({
+        ...prev,
+        dateRange: {
+          startDate: date,
+          endDate: null // Limpia la fecha final si ya no es válida
+        }
+      }));
+    } else {
+      setFilters(prev => ({
+        ...prev,
+        dateRange: {
+          ...prev.dateRange,
+          [field]: date // Actualiza 'startDate' o 'endDate' dinámicamente
+        }
+      }));
+    }
     setCurrentPage(0);
   };
 
-  // Función para obtener el valor de una propiedad anidada
+  // Función para obtener el valor de una propiedad anidada (sin cambios)
   const getNestedValue = (obj, path) => {
     return path.split('.').reduce((acc, part) => acc && acc[part], obj);
   };
@@ -104,45 +157,82 @@ export const ServerSideTable = ({
       {/* Overlay de carga */}
       {isFetching && (
         <div className="fetching-overlay">
-          <div className="loading-spinner"></div>
+          <CustomSpinner />
         </div>
       )}
 
       {/* Header con filtros */}
-      <div className="table-header">
+      <div className="table-header d-flex justify-content-end">
+        {/* --> CAMBIO 8: Actualización del buscador global */}
         {enableGlobalSearch && (
           <div className="search-box">
             <input
               type="text"
               placeholder={placeholder}
-              value={filters.globalSearch}
-              onChange={(e) => handleFilterChange('globalSearch', e.target.value)}
+              value={textInputValues.globalSearch}
+              onChange={(e) => handleTextInputChange('globalSearch', e.target.value)}
               disabled={isLoading}
             />
           </div>
         )}
 
         {enableDateFilter && (
-          <div className="date-filter">
-            <DatePicker
-              selectsRange
-              startDate={filters.dateRange.startDate}
-              endDate={filters.dateRange.endDate}
-              onChange={handleDateChange}
-              placeholderText="Selecciona rango de fechas"
-              disabled={isLoading}
-              className='form-control'
-            />
+          <div className="date-filter-container">
+            <div className="date-picker-wrapper">
+              <label>Fecha Inicial</label>
+              <DatePicker
+                // La fecha seleccionada es la de inicio
+                selected={filters.dateRange.startDate}
+                // Llama al handler para el campo 'startDate'
+                onChange={(date) => handleDateChange('startDate', date)}
+                // Le indica a la librería que este es el campo de inicio de un rango
+                selectsStart
+                startDate={filters.dateRange.startDate}
+                endDate={filters.dateRange.endDate}
+                // La fecha máxima seleccionable es la fecha de fin (si existe) o el día de hoy
+                maxDate={filters.dateRange.endDate || new Date()}
+                // --- Mejoras de UX ---
+                isClearable // Permite al usuario limpiar la fecha con una 'x'
+                placeholderText="AAAA-MM-DD"
+                dateFormat="yyyy-MM-dd" // Formato de fecha claro
+                className='form-control'
+                disabled={isLoading}
+              />
+            </div>
+            <div className="date-picker-wrapper">
+              <label>Fecha Final</label>
+              <DatePicker
+                // La fecha seleccionada es la de fin
+                selected={filters.dateRange.endDate}
+                // Llama al handler para el campo 'endDate'
+                onChange={(date) => handleDateChange('endDate', date)}
+                // Le indica a la librería que este es el campo de fin de un rango
+                selectsEnd
+                startDate={filters.dateRange.startDate}
+                endDate={filters.dateRange.endDate}
+                // La fecha mínima seleccionable es la fecha de inicio que ya se escogió
+                minDate={filters.dateRange.startDate}
+                // La fecha máxima seleccionable siempre es hoy
+                maxDate={new Date()}
+                // --- Mejoras de UX ---
+                isClearable
+                placeholderText="AAAA-MM-DD"
+                dateFormat="yyyy-MM-dd"
+                className='form-control'
+                disabled={isLoading || !filters.dateRange.startDate} // Deshabilitado si no hay fecha de inicio
+              />
+            </div>
           </div>
         )}
 
+        {/* --> CAMBIO 9: Lógica actualizada para el renderizado de filtros */}
         {filtersConfig.map(filter => (
           <div key={filter.id} className="filter-control">
             <label>{filter.label}</label>
             {filter.type === 'select' ? (
               <select
                 value={filters[filter.id]}
-                onChange={(e) => handleFilterChange(filter.id, e.target.value)}
+                onChange={(e) => handleInstantFilterChange(filter.id, e.target.value)}
                 disabled={isLoading}
               >
                 <option value="">Todos</option>
@@ -152,11 +242,11 @@ export const ServerSideTable = ({
                   </option>
                 ))}
               </select>
-            ) : (
+            ) : ( // Se asume que es un input de texto
               <input
                 type={filter.type || 'text'}
-                value={filters[filter.id]}
-                onChange={(e) => handleFilterChange(filter.id, e.target.value)}
+                value={textInputValues[filter.id]}
+                onChange={(e) => handleTextInputChange(filter.id, e.target.value)}
                 placeholder={filter.placeholder}
                 disabled={isLoading}
               />
@@ -164,6 +254,7 @@ export const ServerSideTable = ({
           </div>
         ))}
 
+        {/* Lógica del botón (sin cambios) */}
         {addButton && (
           <button
             className="add-button"
@@ -176,7 +267,8 @@ export const ServerSideTable = ({
         )}
       </div>
 
-      {/* Tabla */}
+      {/* El resto del componente (Tabla, Paginación, Estilos) no necesita cambios */}
+      {/* ... */}
       <div className="table-container">
         {isError ? (
           <div className="error-message">
@@ -206,7 +298,7 @@ export const ServerSideTable = ({
                         );
                       }
 
-                      const value = column.accessorKey 
+                      const value = column.accessorKey
                         ? getNestedValue(row, column.accessorKey)
                         : null;
 
@@ -230,7 +322,6 @@ export const ServerSideTable = ({
         )}
       </div>
 
-      {/* Paginación */}
       <div className="pagination-controls">
         <div className="page-size-selector">
           <span>Mostrar:</span>
@@ -262,7 +353,7 @@ export const ServerSideTable = ({
           >
             ‹
           </button>
-          
+
           {Array.from({ length: Math.min(5, pageCount) }, (_, i) => {
             let pageNum;
             if (pageCount <= 5) {
@@ -302,7 +393,6 @@ export const ServerSideTable = ({
         </div>
       </div>
 
-      {/* Estilos CSS */}
       <style jsx>{`
         .server-side-table {
           font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -364,7 +454,27 @@ export const ServerSideTable = ({
         }
         
         .date-filter {
-          min-width: 250px;
+          margin-top: 20px;
+          min-width: 300px;
+        }
+
+        /* Añade esto dentro de tu etiqueta <style jsx> */
+        .date-filter-container {
+          display: flex;
+          gap: 16px; /* Espacio entre los dos campos de fecha */
+          align-items: flex-end; /* Alinea los elementos en la parte inferior */
+        }
+
+        .date-picker-wrapper {
+          display: flex;
+          flex-direction: column;
+          gap: 4px; /* Espacio entre la etiqueta y el input */
+        }
+
+        .date-picker-wrapper label {
+          font-size: 0.875rem;
+          color: #64748b;
+          margin-left: 2px;
         }
         
         .filter-control {
@@ -396,6 +506,7 @@ export const ServerSideTable = ({
           display: flex;
           align-items: center;
           gap: 8px;
+          margin-top: 20px;
         }
         
         .add-button:disabled {

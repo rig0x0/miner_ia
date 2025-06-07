@@ -4,7 +4,7 @@ export const CustomModal = ({ isOpen, toggle, children, modalTitle }) => {
 
     return (
         <>
-            <Modal centered isOpen={isOpen} toggle={toggle}>
+            <Modal fullscreen isOpen={isOpen} toggle={toggle}  >
                 <ModalHeader toggle={toggle}>{modalTitle}</ModalHeader>
                 <ModalBody>
                     {children}

@@ -1,0 +1,59 @@
+/* Contenedor principal para superponer y centrar */
+.spinner-overlay {
+  position: fixed; /* O 'absolute' si es relativo a un contenedor padre específico */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.8); /* Fondo semi-transparente opcional */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* Asegura que esté por encima de otros elementos */
+  flex-direction: column; /* Para que el texto quede debajo del spinner si es necesario */
+}
+
+.spinner-content-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  /* background-color: #fff; /* Opcional: si quieres un fondo para el spinner y el texto */
+  /* border-radius: 8px; */
+  /* box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Opcional: sombra */
+}
+
+/* Contenedor de los puntos */
+.dots-loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Estilo individual de cada punto */
+.dot {
+  border-radius: 50%; /* Círculos perfectos */
+  margin: 0 5px; /* Espacio entre los puntos */
+  animation: pulse 1.4s infinite ease-in-out both;
+  /* El color de fondo, ancho y alto se aplican inline desde JSX */
+}
+
+/* Animación de pulso para los puntos */
+@keyframes pulse {
+  0%, 80%, 100% {
+    transform: scale(0.6); /* Más pequeño al inicio, en el valle y al final */
+    opacity: 0.7;
+  }
+  40% {
+    transform: scale(1.0); /* Tamaño completo en el pico de la animación */
+    opacity: 1;
+  }
+}
+
+/* Estilo del texto de carga */
+.loading-text {
+  margin-top: 15px; /* Espacio entre los puntos y el texto */
+  font-size: 16px;
+  /* El color se aplica inline desde JSX */
+  font-weight: 500;
+}
