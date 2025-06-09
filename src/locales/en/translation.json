@@ -1,0 +1,325 @@
+{
+  "topbar": {
+    "dashboard": "Dashboard",
+    "language": "Language",
+    "logout": "Logout"
+  },
+  "sidebar": {
+    "supervisorGeneral": {
+      "dashboard": "Dashboard",
+      "users": "Users",
+      "seeUsers": "View Users",
+      "data": "Data",
+      "proyecciones": "Projections",
+      "ensayes": "Tests",
+      "reportes": "Reports"
+    },
+    "supervisordePlanta": {
+      "dashboard": "Dashboard",
+      "data": "Data",
+      "proyecciones": "Projections",
+      "ensayes": "Tests",
+      "reportes": "Reports"
+    },
+    "supervisordeEnsayista": {
+      "data": "Data",
+      "proyecciones": "Projections",
+      "ensayes": "Tests",
+      "reportes": "Reports"
+    },
+    "ensayista": {
+      "dashboardEnsayista": "Tester Dashboard"
+    },
+    "logout": "Logout"
+  },
+  "tablero": {
+    "titulo": "Dashboard",
+    "descripcionTitulo": "Here you can find a summary of the balance data",
+    "cardEnsayeporDia": {
+      "titulo": "Tests of the Day",
+      "turno": "Shift",
+      "estatusPendiente": "Pending",
+      "pendienteDescripcion": "Test pending upload",
+      "infoExtra": "The tester has not registered the data yet"
+    },
+    "cardResumenEnsaye": {
+      "titulo": "Test Summary",
+      "descripcionError": "No tests were found for the selected dates."
+    },
+    "cardGrafico": {
+      "titulo": "Data Chart",
+      "tipodeDato": {
+        "recuperaciones": "recoveries",
+        "contenidos": "contents",
+        "leyes": "grades"
+      },
+      "selecciondeElemento": "Select Elements to Chart:",
+      "seleccionError": "Please select at least one element to display the chart.",
+      "seleccionNohayDatos": "There is no data available for the chart with the current selection.",
+      "grafica": {
+        "titulo": "Results Chart",
+        "tituloEjeYrecuperacion": "Recovery",
+        "tituloEjeYcontenido": "Content",
+        "tituloEjeYley": "Grade",
+        "elemento": {
+          "oro": "Gold",
+          "plata": "Silver",
+          "cobre": "Copper",
+          "plomo": "Lead",
+          "zinc": "Zinc",
+          "hierro": "Iron"
+        }
+      }
+    }
+  },
+  "viewUsers": {
+    "eliminar": "Delete",
+    "editar": "Edit",
+    "todos": "All",
+    "actions": "Actions",
+    "botonRegistrar": "Add new user",
+    "labelId": "Search by User ID",
+    "placeholderId": "Enter the user ID",
+    "labelNombre": "Search by Username",
+    "placeholderNombre": "Enter the username",
+    "labelRol": "Select a role",
+    "rolSupervisorGeneral": "General Supervisor",
+    "rolSupervisordePlanta": "Plant Supervisor",
+    "rolSupervisordeEnsayista": "Assay Supervisor",
+    "rolEnsayista": "Tester",
+    "modal": {
+      "correo": "Email",
+      "titleRegistrar": "Register New User",
+      "advertenciaCorreo": "Email is required",
+      "errorCorreo": "Invalid email",
+      "nombre": "Username",
+      "advertenciaNombre": "Username is required",
+      "rol": "Select the User Role",
+      "labelRol": "User Role",
+      "advertenciaRol": "User role is required",
+      "modalRegistrar": {
+        "contraseña": "Enter Password",
+        "advertenciaContraseña": "Password is required",
+        "errorContraseña": "Password must be at least 6 characters",
+        "confirmar": "Confirm Password",
+        "placeholderConfirmar": "Confirm Password",
+        "advertenciaConfirmar": "You must repeat the password",
+        "errorConfirmar": "Passwords do not match",
+        "cancelar": "Cancel",
+        "registrar": "Register"
+      },
+      "modalEditar": {
+        "tituloEditar": "Edit User",
+        "placeholderCorreo": "Enter the user's email",
+        "placeholderNombre": "Enter the user's name",
+        "cambiar": "Change Password",
+        "contraseñaAnterior": "Enter Previous Password",
+        "placeholderAnterior": "Enter the previous password",
+        "errorAnterior": "Previous password is required",
+        "errorMinLeg": "Password must be at least 6 characters",
+        "nueva": "Enter New Password",
+        "placeholderNueva": "Enter the new password",
+        "errorNueva": "New password is required",
+        "labelConfirmNewPassword": "Confirm New Password",
+        "placeholderConfirmNewPassword": "Confirm new password",
+        "errorRepeatPasswordRequired": "You must repeat the password",
+        "errorPasswordsMismatch": "Passwords do not match",
+        "buttonCancel": "Cancel",
+        "buttonEditUser": "Edit User"
+      },
+      "modalEliminar": {
+        "modalDeleteTitle": "Delete User",
+        "modalDeleteConfirm": "Are you sure you want to delete this user",
+        "modalDeleteWarning": "Deleting the user will revoke all access to the platform and this action cannot be undone.",
+        "buttonDeleteCancel": "Cancel",
+        "buttonDeleteConfirm": "Yes, Delete",
+        "pageTitleUsers": "Users",
+        "pageDescriptionUsers": "Manage the platform users"
+      }
+    }
+  },
+  "proyecciones": {
+    "titulo": "Projections Module",
+    "descripcion": "Select an element to view AI-based projections",
+    "actualizar": "Update",
+    "recuperacion": "Current Recovery",
+    "prediccion": "Prediction Average",
+    "tendencia": "Trend",
+    "tiempo": "Next 7 days",
+    "prediccionT7": "T+7 Prediction",
+    "dia": "Day 7",
+    "tituloGrafica": "Recovery Projection",
+    "descripcionGrafica": "Historical data and predictions for the next 7 days",
+    "historico": "Historical",
+    "prediccionLabel": "Prediction",
+    "tituloDetalles": "Detailed Predictions",
+    "descripcionDetalles": "Specific values for each day",
+    "day": "Day",
+    "tituloTendencia": "Trend Analysis",
+    "descripcionTendencia": "Data interpretation",
+    "tendenciaUp": "An improvement in recovery is expected over the next few days.",
+    "tendenciaDown": "A decrease in recovery is forecasted. It is recommended to review the processes.",
+    "actualizacion": "Last update: "
+  },
+  "reportes": {
+    "errorFechaInicio": "Start date is required.",
+    "errorFechaFin": "End date is required.",
+    "titulo": "Production Reports",
+    "descripcion": "Select filters and press 'Generate Report' to start.",
+    "fechaInicio": "Start Date",
+    "fechaFin": "End Date",
+    "rangos": "Predefined Ranges",
+    "semanaActual": "Current Week",
+    "ultimaSemana": "Last Week",
+    "ultimoTrimestre": "Last Quarter",
+    "mesActual": "Current Month",
+    "ultimoMes": "Last Month",
+    "laboratorio": "Laboratory Type",
+    "todos": "All",
+    "turno": "Shift",
+    "ensayista": "Tester",
+    "generarReporte": "Generate Report",
+    "restablecer": "Reset Filters",
+    "descargar": "Download PDF",
+    "previsualizar": "Report Preview",
+    "alerta": "Report ready to preview"
+  },
+  "ensayesVista": {
+    "tituloCard": "Registered Tests History",
+    "titulo": "Tests",
+    "descripcion": "View the tests registered on the platform",
+    "laboratorio": "Laboratory",
+    "conciliado": "Reconciled",
+    "real": "Real",
+    "turno": "Shift",
+    "turno1": "Shift 1",
+    "turno2": "Shift 2",
+    "acciones": "Actions",
+    "verMas": "See test",
+    "cabeza": "Head Grade",
+    "humedad": "Moisture",
+    "molienda": "Wet Grinding",
+    "tipo": "Test Type",
+    "fecha": "Date",
+    "fechaInicial": "Start Date",
+    "fechaFinal": "End Date",
+    "mostrar": "Show: ",
+    "pagina": "Page",
+    "registros": "records"
+  },
+  "detalles": {
+    "back": "Back",
+    "title": "Test Details",
+    "descripcion": "Select an element to view AI-based projections",
+    "ensayista": "Tester:",
+    "turno": "Shift",
+    "cardEnsayes": "Tests",
+    "cardEnsayesDescripcion": "Detail of elements for each stage of the circuit",
+    "vistaTabla": "Table View",
+    "vistaGrafico": "Chart View",
+    "etapa": "Stage ",
+    "porEtapa": " per Stage",
+    "cardContenidos": "Contents",
+    "cardContenidosDescripcion": "Detail of elements for each stage of the circuit",
+    "cardDistribucion": "Distribution",
+    "cardDistribucionDescripcion": "Detail of elements for each stage of the circuit"
+  },
+  "ensayista": {
+    "titulo": "Tester Dashboard",
+    "descripcion": "Manage and view laboratory tests",
+    "registrar": "Register New Test",
+    "registrarDescripcion": "Create a new test record",
+    "cardTitle": "Registered Tests History",
+    "buscar": "Search..."
+  },
+  "formEnsayista": {
+    "title1": "Register New Test",
+    "volver": "Back to Dashboard",
+    "selecciona": "Select Shift",
+    "atras": "Previous Step",
+    "adelante": "Next",
+    "title3": "Technical Test Data",
+    "descripcion1": "Fields marked with ",
+    "descripcion2": " are required",
+    "title4": "Circuit and Element Data",
+    "importar": "Import data from Excel",
+    "limpiar": "Clear",
+    "formatos": "Formats ",
+    "descargar": "Download Template",
+    "verifique": "File processed. Check the data in the table.",
+    "limpiarCelda": "Clear Cell",
+    "guardar": "Save Test",
+    "guardando": "Saving...",
+    "confirmar": "Confirm Test Data",
+    "resumen": "General Information Summary",
+    "lab": "Lab Type",
+    "resumen2": "Circuit Data Summary",
+    "volverEditar": "Back to Edit",
+    "confYguardar": "Confirm and Save"
+  },
+  "ensayeCard": {
+    "completado": "Completed",
+    "idEnsaye": "Test ID",
+    "datos": "Product Data",
+    "activo": "Active",
+    "inactivo": "Inactive",
+    "rol": "Role: Tester"
+  },
+  "card": {
+    "parametro": "Parameter",
+    "valor": "Value",
+    "comparacion": "vs Yesterday",
+    "recuperacion": "Recovery",
+    "ley": "Grade",
+    "contenido": "Content"
+  },
+  "tabs": {
+    "recuperaciones": "Recoveries",
+    "contenidos": "Contents",
+    "leyes": "Grades"
+  },
+  "detailsEnsaye": {
+    "dateFormat": "MMMM dd, yyyy, HH:mm:ss",
+    "laboratorioConciliado": "Reconciled Lab",
+    "laboratorioReal": "Real Lab"
+  },
+  "modificar": {
+    "exito": "The user has been successfully registered in the system.",
+    "error": "Error creating the user: ",
+    "exitoUpdate": "The user with ID: {{id}} has been successfully edited.",
+    "errorUpdate": "Error trying to edit the user: ",
+    "exitoDelete": "The user has been deleted from the system.",
+    "errorDelete": "Error trying to delete the user: "
+  },
+  "mensajes": {
+    "noEncontrados": "Data not found",
+    "noEncontrados2": "No matching data found with the expected stages and elements in the file.",
+    "error": "Processing error",
+    "errorMensaje": "Check the file format and ensure the headers match.",
+    "exito": "Data Loaded!",
+    "exitoEnsaye": "Saved!",
+    "exitoMensaje": "Test registered successfully.",
+    "errorEnsaye": "Error",
+    "errorEnsayeMensaje": "Could not save the test. Please try again.",
+    "errorLectura": "Read Error",
+    "errorLectura2": "Could not read the file. Make sure it is a valid Excel file.",
+    "errorArchivo": "File Error",
+    "errorArchivo2": "There was an error uploading the file.",
+    "vacio": "Empty file",
+    "errorRegistrar": "Registration error"
+  },
+   "tutorial": {
+    "titulo1": "Welcome to the Table Editor",
+    "contenido1": "We will guide you through the main features to efficiently enter data.",
+    "titulo2": "Import from Excel",
+    "contenido2": "Use 'Select file' to upload data. If it's your first time, download the template.",
+    "titulo3": "Keyboard Navigation",
+    "contenido3": "Use arrow keys to move. Tab/Shift+Tab horizontally, Enter/Shift+Enter vertically.",
+    "titulo4": "Copy and Paste",
+    "contenido4": "Right-click on a cell to copy. Double-click another to paste.",
+    "titulo5": "Quick Editing",
+    "contenido5": "Click a cell to edit or press F2. Press Enter to save changes (implicit).",
+    "titulo6": "Save the Data",
+    "contenido6": "When finished, click 'Save Test' to register the information."
+  }
+}

@@ -8,8 +8,10 @@ import { throwNotification } from '../../helpers/ThrowNotification'
 import { ToastContainer } from 'react-toastify'
 import { Spinner } from 'reactstrap'
 import { ServerSideTable } from '../ServerSideTable'
+import { useTranslation } from "react-i18next"; // <-- Solo necesitamos este hook
 
 export const ViewUser = () => {
+    const { t, i18n } = useTranslation();
 
     const {
         register,
@@ -95,7 +97,7 @@ export const ViewUser = () => {
         onSuccess: (data) => {
             console.log('Usuario creado', data);
             // Acción posterior a la creación del usuario.
-            throwNotification("El usuario se ha registrado en el sistema satisfactoriamente.", "success");
+            throwNotification(t("modificar.exito"), "success");
 
             // Invalidar la query de los usuarios para forzar la recarga
             queryClient.invalidateQueries(["users"]);
@@ -109,7 +111,7 @@ export const ViewUser = () => {
         onError: (error) => {
             console.log(error)
             // Manejo de error si la solicitud falla.
-            throwNotification("Error al crear el usuario: " + error.response?.data?.detail, "error");
+            throwNotification(t("modificar.error") + error.response?.data?.detail, "error");
         },
     });
 
@@ -125,7 +127,7 @@ export const ViewUser = () => {
         onSuccess: (data) => {
             console.log('Usuario Editado', data);
             // Acción posterior a la creación del usuario.
-            throwNotification(`El usuario con ID: ${data.id}, se ha editado satisfactoriamente.`, "success");
+            throwNotification(t('modificar.exitoUpdate', { id: data.id }), "success");
 
             // Invalidar la query de los usuarios para forzar la recarga
             queryClient.invalidateQueries(["users"]);
@@ -139,7 +141,7 @@ export const ViewUser = () => {
         onError: (error) => {
             console.log(error)
             // // Manejo de error si la solicitud falla.
-            throwNotification("Error al intentar editar al usuario: " + error.response?.data?.detail, "error");
+            throwNotification(t("modificar.errorUpdate") + error.response?.data?.detail, "error");
         },
     })
 
@@ -151,7 +153,7 @@ export const ViewUser = () => {
         onSuccess: (data) => {
             console.log('Usuario Eliminado', data);
             // Acción posterior a la creación del usuario.
-            throwNotification("El usuario ha sido eliminado del sistema", "success");
+            throwNotification(t("modificar.exitoDelete"), "success");
 
             // Invalidar la query de los usuarios para forzar la recarga
             queryClient.invalidateQueries(["users"]);
@@ -161,7 +163,7 @@ export const ViewUser = () => {
         onError: (error) => {
             console.error('Error al crear el usuario', error);
 
-            throwNotification("Error al intentar eliminar al usuario: " + error.response?.data?.detail, "error");
+            throwNotification(t("modificar.errorDelete") + error.response?.data?.detail, "error");
             // Manejo de error si la solicitud falla.
         },
     });
@@ -236,7 +238,7 @@ export const ViewUser = () => {
     }
 
     const button = {
-        text: 'Registrar Nuevo Usuario',
+        text: t("viewUsers.botonRegistrar"),
         // No necesitas className aquí, ya que ServerSideTable tiene su propio estilo
         onClick: () => {
             setModalOpen(true)
@@ -251,16 +253,16 @@ export const ViewUser = () => {
             accessorKey: 'id'
         },
         {
-            header: 'Correo Electrónico',
+            header: t("viewUsers.modal.correo"),
             accessorKey: 'email'
         },
         {
-            header: 'Nombre del Usuario',
+            header: t("viewUsers.modal.nombre"),
             accessorKey: 'name'
         },
         {
             id: 'rol',
-            header: 'Rol del Usuario',
+            header: t("viewUsers.modal.labelRol"),
             accessorKey: 'rol',
             cell: ({ row }) => {
                 return (
@@ -272,14 +274,14 @@ export const ViewUser = () => {
         },
         {
             id: 'acciones',
-            header: 'Acciones',
+            header: t("viewUsers.actions"),
             cell: ({ row }) => {
                 return (
                     <>
                         <div className="">
                             <td class="d-flex justify-content-center white-space-nowrap text-end pe-0">
                                 <div class="btn-reveal-trigger position-static">
-                                    <button class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10" type="button" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent">
+                                    <button class="btn fondoBtnVista dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10" type="button" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent">
                                         <span class="fas fa-ellipsis-h fs-9"></span>
                                     </button>
                                     <div class="dropdown-menu dropdown-menu-end py-2">
@@ -287,7 +289,7 @@ export const ViewUser = () => {
                                             class="dropdown-item"
                                             onClick={() => openEditModal(row.original)}
                                         >
-                                            <i class="fas fa-pen"></i> Editar
+                                            <i class="fas fa-pen"></i> {t("viewUsers.editar")}
                                         </button>
                                         <div class="dropdown-divider">
                                         </div>
@@ -295,7 +297,7 @@ export const ViewUser = () => {
                                             class="dropdown-item text-danger"
                                             onClick={() => openDeleteModal(row.original)}
                                         >
-                                            <i class="fa-solid fa-trash"></i> Eliminar
+                                            <i class="fa-solid fa-trash"></i> {t("viewUsers.eliminar")}
                                         </button>
                                     </div>
                                 </div>
@@ -312,25 +314,25 @@ export const ViewUser = () => {
     const filtersConfig = [
         {
             id: 'user_id',
-            label: 'Buscar por ID de usuario',
+            label: t("viewUsers.labelId"),
             type: 'text',
-            placeholder: 'Ingresa el ID del usuario'
+            placeholder: t("viewUsers.placeholderId")
         },
         {
             id: 'name',
-            label: 'Buscar por nombre de usuario',
+            label: t("viewUsers.labelNombre"),
             type: 'text',
-            placeholder: 'Ingresa el nombre del usuario'
+            placeholder: t("viewUsers.placeholderNombre")
         },
         {
             id: 'rol',
-            label: 'Selecciona un rol',
+            label: t("viewUsers.labelRol"),
             type: 'select',
             options: [
-                { value: 1, label: 'Supervisor General' },
-                { value: 2, label: 'Supervisor de Planta' },
-                { value: 3, label: 'Supervisor de Ensayista' },
-                { value: 4, label: 'Ensayista' },
+                { value: 1, label: t("viewUsers.rolSupervisorGeneral") },
+                { value: 2, label: t("viewUsers.rolSupervisordePlanta") },
+                { value: 3, label: t("viewUsers.rolSupervisordeEnsayista") },
+                { value: 4, label: t("viewUsers.rolEnsayista") },
             ]
         }
     ];
@@ -350,20 +352,20 @@ export const ViewUser = () => {
     return (
         <>
             {/* Register User */}
-            <CustomModal isOpen={modalOpen} toggle={toggleModal} modalTitle={"Registrar Nuevo Usuario"} >
+            <CustomModal isOpen={modalOpen} toggle={toggleModal} modalTitle={t("viewUsers.modal.titleRegistrar")} >
                 <form onSubmit={handleSubmit(onSubmit)}>
 
                     <div class="mb-3">
-                        <label className='form-label'>Correo Electrónico</label>
+                        <label className='form-label'>{t("viewUsers.modal.correo")}</label>
                         <input
                             className={`form-control ${errors.username ? 'is-invalid' : ''}`}
                             type="email"
                             placeholder="name@example.com"
                             {...register('username', {
-                                required: 'El email es obligatorio',
+                                required: t("viewUsers.modal.advertenciaCorreo"),
                                 pattern: {
                                     value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                                    message: 'Email inválido',
+                                    message: t("viewUsers.modal.errorCorreo"),
                                 },
                             })}
                         />
@@ -375,13 +377,13 @@ export const ViewUser = () => {
                     </div>
 
                     <div class="mb-3">
-                        <label className='form-label'>Nombre del Usuario</label>
+                        <label className='form-label'>{t("viewUsers.modal.nombre")}</label>
                         <input
                             className={`form-control ${errors.name ? 'is-invalid' : ''}`}
                             type="text"
-                            placeholder="Escribe el nombre del usuario"
+                            placeholder={t("viewUsers.modal.modalEditar.placeholderNombre")}
                             {...register('name', {
-                                required: 'El nombre del usuario es obligatorio',
+                                required: t("viewUsers.modal.advertenciaNombre"),
                             })}
                         />
                         {errors.name && (
@@ -392,19 +394,19 @@ export const ViewUser = () => {
                     </div>
                     {/* Select */}
                     <div className="mb-3">
-                        <label className='form-label'>Rol del Usuario</label>
+                        <label className='form-label'>{t("viewUsers.modal.labelRol")}</label>
                         <select
                             className={`form-select ${errors.role ? 'is-invalid' : ''}`}
                             aria-label="Floating label select example"
                             {...register('rol_id', {
-                                required: 'El rol del usuario es obligatorio',
+                                required: t("viewUsers.modal.advertenciaRol"),
                             })}
                         >
-                            <option value={null}>Seleccione el Rol del Usuario</option>
-                            <option value="1">Supervisor General</option>
-                            <option value="2">Supervisor de Planta</option>
-                            <option value="3">Supervisor de Ensayista</option>
-                            <option value="4">Ensayista</option>
+                            <option value={null}>{t("viewUsers.labelRol")}</option>
+                            <option value="1">{t("viewUsers.rolSupervisorGeneral")}</option>
+                            <option value="2">{t("viewUsers.rolSupervisordePlanta")}</option>
+                            <option value="3">{t("viewUsers.rolSupervisordeEnsayista")}</option>
+                            <option value="4">{t("viewUsers.rolEnsayista")}</option>
                         </select>
                         {errors.role && (
                             <div className="invalid-feedback">
@@ -413,16 +415,16 @@ export const ViewUser = () => {
                         )}
                     </div>
                     <div class="mb-3">
-                        <label className='form-label'>Escriba la Contraseña</label>
+                        <label className='form-label'>{t("viewUsers.modal.modalRegistrar.contraseña")}</label>
                         <input
                             className={`form-control ${errors.password ? 'is-invalid' : ''}`}
                             type="password"
                             placeholder="Password"
                             {...register('password', {
-                                required: 'La contraseña es obligatoria',
+                                required: t("viewUsers.modal.modalRegistrar.advertenciaContraseña"),
                                 minLength: {
                                     value: 6,
-                                    message: 'La contraseña debe tener al menos 6 caracteres',
+                                    message: t("viewUsers.modal.modalRegistrar.errorContraseña"),
                                 },
                             })}
                         />
@@ -434,14 +436,14 @@ export const ViewUser = () => {
                     </div>
 
                     <div className="mb-3">
-                        <label className='form-label'>Confirme la Contraseña</label>
+                        <label className='form-label'>{t("viewUsers.modal.modalRegistrar.confirmar")}</label>
                         <input
                             className={`form-control ${errors.confirmPassword ? 'is-invalid' : ''}`}
                             type="password"
-                            placeholder="Confirmar Contraseña"
+                            placeholder={t("viewUsers.modal.modalRegistrar.placeholderConfirmar")}
                             {...register('confirmPassword', {
-                                required: 'Debe repetir la contraseña',
-                                validate: value => value === password || 'Las contraseñas no coinciden',
+                                required: t("viewUsers.modal.modalRegistrar.advertenciaConfirmar"),
+                                validate: value => value === password || t("viewUsers.modal.modalRegistrar.errorConfirmar"),
                             })}
                         />
                         {errors.confirmPassword && (
@@ -453,11 +455,11 @@ export const ViewUser = () => {
 
                     <div className='row'>
                         <div className="col-6">
-                            <button type="button" className="btn btn-secondary w-100" onClick={toggleModal}>Cancelar</button>
+                            <button type="button" className="btn btn-secondary w-100" onClick={toggleModal}>{t("viewUsers.modal.modalRegistrar.cancelar")}</button>
                         </div>
                         <div className="col-6">
                             <button type="submit" className="btn btn-primary w-100">
-                                <span className='fas fa-plus me-2'></span>Registrar
+                                <span className='fas fa-plus me-2'></span>{t("viewUsers.modal.modalRegistrar.registrar")}
                             </button>
                         </div>
 
@@ -467,16 +469,16 @@ export const ViewUser = () => {
             </CustomModal>
 
             {/* Edit User */}
-            <CustomModal isOpen={modalEdit} toggle={toggleModalEdit} modalTitle={"Editar Usuario"}>
+            <CustomModal isOpen={modalEdit} toggle={toggleModalEdit} modalTitle={t("viewUsers.modal.modalEditar.tituloEditar")}>
                 <form onSubmit={handleSubmitEdit(onSubmitEdit)}>
                     <div class="mb-3">
-                        <label className="form-label">Correo Electrónico</label>
+                        <label className="form-label">{t("viewUsers.modal.correo")}</label>
                         <input
                             className={`form-control ${errorsEdit?.username ? 'is-invalid' : ''}`}
                             type="text"
-                            placeholder="Escribe el correo del usuario"
+                            placeholder={t("viewUsers.modal.modalEditar.placeholderCorreo")}
                             {...registerEdit('username', {
-                                required: 'El correo del usuario es obligatorio',
+                                required: t("viewUsers.modal.advertenciaCorreo"),
                             })}
                         />
                         {errorsEdit?.username && (
@@ -487,13 +489,13 @@ export const ViewUser = () => {
 
                     </div>
                     <div class="mb-3">
-                        <label className='form-label'>Nombre del Usuario</label>
+                        <label className='form-label'>{t("viewUsers.modal.nombre")}</label>
                         <input
                             className={`form-control ${errorsEdit?.name ? 'is-invalid' : ''}`}
                             type="text"
-                            placeholder="Escribe el nombre del usuario"
+                            placeholder={t("viewUsers.modal.modalEditar.placeholderNombre")}
                             {...registerEdit('name', {
-                                required: 'El nombre del usuario es obligatorio',
+                                required: t("viewUsers.modal.advertenciaNombre"),
                             })}
                         />
                         {errorsEdit?.name && (
@@ -504,18 +506,18 @@ export const ViewUser = () => {
                     </div>
                     {/* Select */}
                     <div className="mb-3">
-                        <label className='form-label'>Rol del Usuario</label>
+                        <label className='form-label'>{t("viewUsers.labelRol")}</label>
                         <select
                             className={`form-select ${errorsEdit?.rol_id ? 'is-invalid' : ''}`}
                             aria-label="Floating label select example"
                             {...registerEdit('rol_id', {
-                                required: 'El rol del usuario es obligatorio',
+                                required:t("viewUsers.modal.advertenciaRol"),
                             })}
                         >
-                            <option value="">Seleccione el Rol del Usuario</option>
-                            <option value="2">Supervisor de Planta</option>
-                            <option value="3">Supervisor de Ensayista</option>
-                            <option value="4">Ensayista</option>
+                            <option value="">{t("viewUsers.rolSupervisorGeneral")}</option>
+                            <option value="2">{t("viewUsers.rolSupervisordePlanta")}</option>
+                            <option value="3">{t("viewUsers.rolSupervisordeEnsayista")}</option>
+                            <option value="4">{t("viewUsers.rolEnsayista")}</option>
                         </select>
                         {errorsEdit?.rol_id && (
                             <div className="invalid-feedback">
@@ -530,13 +532,13 @@ export const ViewUser = () => {
                         viewChangePassword ? (
                             <div className='mb-3'>
                                 <button type='button' disabled className='btn btn-success w-100'>
-                                    <i className='fas fa-lock-open me-2'></i> Cambiar Contraseña
+                                    <i className='fas fa-lock-open me-2'></i> {t("viewUsers.modal.modalEditar.cambiar")}
                                 </button>
                             </div>
                         ) : (
                             <div className='mb-3'>
                                 <button type='button' onClick={() => setViewChangePassword(true)} className='btn btn-outline-warning w-100'>
-                                    <i className='fas fa-lock me-2'></i> Cambiar Contraseña
+                                    <i className='fas fa-lock me-2'></i> {t("viewUsers.modal.modalEditar.cambiar")}
                                 </button>
                             </div>
                         )
@@ -546,14 +548,14 @@ export const ViewUser = () => {
                     {viewChangePassword && (
                         <>
                             <div className="mb-3">
-                                <label className="form-label">Escriba la Contraseña Anterior</label>
+                                <label className="form-label">{t("viewUsers.modal.modalEditar.contraseñaAnterior")}</label>
                                 <input
                                     className={`form-control ${errorsEdit?.confirm_password ? 'is-invalid' : ''}`}
                                     type="password"
-                                    placeholder="Escribe la contraseña anterior"
+                                    placeholder={t("viewUsers.modal.modalEditar.placeholderAnterior")}
                                     {...registerEdit("confirm_password", {
-                                        required: "La anterior contraseña es obligatoria",
-                                        minLength: { value: 6, message: "La contraseña debe tener al menos 6 caracteres" },
+                                        required: t("viewUsers.modal.modalEditar.errorAnterior"),
+                                        minLength: { value: 6, message: t("viewUsers.modal.modalEditar.errorMinLeg") },
                                     })}
                                 />
                                 {errorsEdit?.confirm_password && (
@@ -564,14 +566,14 @@ export const ViewUser = () => {
                             </div>
 
                             <div className="mb-3">
-                                <label className="form-label">Escriba la Nueva Contraseña</label>
+                                <label className="form-label">{t("viewUsers.modal.modalEditar.nueva")}</label>
                                 <input
                                     className={`form-control ${errorsEdit?.new_password ? 'is-invalid' : ''}`}
                                     type="password"
-                                    placeholder="Escribe la nueva contraseña"
+                                    placeholder={t("viewUsers.modal.modalEditar.placeholderNueva")}
                                     {...registerEdit("new_password", {
-                                        required: "La nueva contraseña es obligatoria",
-                                        minLength: { value: 6, message: "La contraseña debe tener al menos 6 caracteres" },
+                                        required: t("viewUsers.modal.modalEditar.errorNueva"),
+                                        minLength: { value: 6, message: t("viewUsers.modal.modalEditar.errorMinLeg") },
                                     })}
                                 />
                                 {errorsEdit?.new_password && (
@@ -582,15 +584,15 @@ export const ViewUser = () => {
                             </div>
 
                             <div className="mb-3">
-                                <label className="form-label">Confirme la Nueva Contraseña</label>
+                                <label className="form-label">{t("viewUsers.modal.modalEditar.labelConfirmNewPassword")}</label>
                                 <input
                                     className={`form-control ${errorsEdit?.repit_Password ? 'is-invalid' : ''}`}
                                     type="password"
-                                    placeholder="Confirmar nueva contraseña"
+                                    placeholder={t("viewUsers.modal.modalEditar.placeholderConfirmNewPassword")}
                                     {...registerEdit("repit_Password", {
-                                        required: "Debe repetir la contraseña",
+                                        required: t("viewUsers.modal.modalEditar.errorRepeatPasswordRequired"),
                                         validate: value =>
-                                            value === new_password || "Las contraseñas no coinciden",
+                                            value === new_password || t("viewUsers.modal.modalEditar.errorPasswordsMismatch"),
                                     })}
                                 />
                                 {errorsEdit?.repit_Password && (
@@ -605,11 +607,11 @@ export const ViewUser = () => {
 
                     <div className='row'>
                         <div className="col-6">
-                            <button type="button" className="btn btn-secondary w-100" onClick={toggleModalEdit}>Cancelar</button>
+                            <button type="button" className="btn btn-secondary w-100" onClick={toggleModalEdit}>{t("viewUsers.modal.modalEditar.buttonCancel")}</button>
                         </div>
                         <div className="col-6">
                             <button type="submit" className="btn btn-info w-100">
-                                <i class="fas fa-pen me-2"></i>Editar Usuario
+                                <i class="fas fa-pen me-2"></i>{t("viewUsers.modal.modalEditar.buttonEditUser")}
                             </button>
                         </div>
 
@@ -619,24 +621,24 @@ export const ViewUser = () => {
             </CustomModal>
 
             {/* Delete User */}
-            <CustomModal isOpen={modalDelete} toggle={toggleModalDelete} modalTitle={"Eliminar Usuario"}>
-                <p className='text-center'>¿Estás seguro de que quieres eliminar a este usuario <span className='fw-bolder'>{userSelected.name}</span>?</p>
-                <p className=''>Al eliminar al usuario, este perderá el acceso total a la plataforma y no podrás revertir el proceso.</p>
+            <CustomModal isOpen={modalDelete} toggle={toggleModalDelete} modalTitle={t("viewUsers.modal.modalEliminar.modalDeleteTitle")}>
+                <p className='text-center'>{t("viewUsers.modal.modalEliminar.modalDeleteConfirm")} <span className='fw-bolder'>{userSelected.name}</span>?</p>
+                <p className=''>{t("viewUsers.modal.modalEliminar.modalDeleteWarning")}</p>
                 <div className='row'>
                     <div className="col-6">
-                        <button type="button" className="btn btn-secondary w-100" onClick={toggleModalDelete}>Cancelar</button>
+                        <button type="button" className="btn btn-secondary w-100" onClick={toggleModalDelete}>{t("viewUsers.modal.modalEliminar.buttonDeleteCancel")}</button>
                     </div>
                     <div className="col-6">
                         <button onClick={deleteUser} type="button" className="btn btn-danger w-100">
-                            <span className='fas fa-trash me-2'></span> Sí, Eliminar
+                            <span className='fas fa-trash me-2'></span> {t("viewUsers.modal.modalEliminar.buttonDeleteConfirm")}
                         </button>
                     </div>
                 </div>
             </CustomModal>
 
             <div className="container py-4">
-                <h1 className="h3 fw-bold">Usuarios</h1>
-                <p className="text-muted">Gestiona los usuarios de la plataforma</p>
+                <h1 className="h3 fw-bold">{t("viewUsers.modal.modalEliminar.pageTitleUsers")}</h1>
+                <p className="text-muted">{t("viewUsers.modal.modalEliminar.pageDescriptionUsers")}</p>
                 {/* Tabla de usuarios */}
                 <div>
                     <div className="card shadow-sm">

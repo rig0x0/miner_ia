@@ -8,8 +8,10 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useTranslation } from "react-i18next"; // <-- Solo necesitamos este hook
 
 export const GenerateReport = () => {
+    const { t, i18n } = useTranslation();
     // --- ESTADOS DEL COMPONENTE ---
     const [fechaInicio, setFechaInicio] = useState('');
     const [fechaFin, setFechaFin] = useState('');
@@ -156,7 +158,7 @@ export const GenerateReport = () => {
             setTimeout(() => {
                 generarPDF(data);
                 setIsGeneratingPdf(false);
-                toast.success("Reporte listo para previsualizar");
+                toast.success(t("reportes.alerta"));
                 setTimeout(() => previewRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
             }, 50);
         },
@@ -170,8 +172,8 @@ export const GenerateReport = () => {
     // --- MANEJADORES DE EVENTOS ---
     const handleGenerarReporte = () => {
         const newErrors = {};
-        if (!fechaInicio) newErrors.fechaInicio = 'La fecha de inicio es obligatoria.';
-        if (!fechaFin) newErrors.fechaFin = 'La fecha de fin es obligatoria.';
+        if (!fechaInicio) newErrors.fechaInicio = t("reportes.errorFechaInicio");
+        if (!fechaFin) newErrors.fechaFin = t("reportes.errorFechaFin");
 
         if (Object.keys(newErrors).length > 0) {
             setFieldErrors(newErrors);
@@ -225,15 +227,15 @@ export const GenerateReport = () => {
     // --- RENDERIZADO DEL COMPONENTE ---
     return (
         <div className="container py-4">
-            <h1 className="h3 fw-bold">Reportes de Producción</h1>
-            <p className="text-muted">Selecciona los filtros y presiona "Generar Reporte" para empezar.</p>
+            <h1 className="h3 fw-bold">{t("reportes.titulo")}</h1>
+            <p className="text-muted">{t("reportes.descripcion")}</p>
 
             <fieldset disabled={isUIBlocked} style={{ opacity: isUIBlocked ? 0.7 : 1, transition: 'opacity 0.3s' }}>
                 <Card className="p-3 shadow-sm mb-4">
                     <Row className="mb-3">
                         <Col md={6} lg={4}>
                             <Form.Group controlId="fechaInicio">
-                                <Form.Label>Fecha de Inicio</Form.Label>
+                                <Form.Label>{t("reportes.fechaInicio")}</Form.Label>
                                 <Form.Control type="date" value={fechaInicio} max={fechaFin || format(new Date(), 'yyyy-MM-dd')}
                                     onChange={(e) => { setFechaInicio(e.target.value); setActiveRange(''); setFieldErrors({}); }}
                                     isInvalid={!!fieldErrors.fechaInicio}
@@ -243,7 +245,7 @@ export const GenerateReport = () => {
                         </Col>
                         <Col md={6} lg={4}>
                             <Form.Group controlId="fechaFin">
-                                <Form.Label>Fecha de Fin</Form.Label>
+                                <Form.Label>{t("reportes.fechaFin")}</Form.Label>
                                 <Form.Control type="date" value={fechaFin} min={fechaInicio} max={format(new Date(), 'yyyy-MM-dd')}
                                     onChange={(e) => { setFechaFin(e.target.value); setActiveRange(''); setFieldErrors({}); }}
                                     isInvalid={!!fieldErrors.fechaFin}
@@ -254,35 +256,35 @@ export const GenerateReport = () => {
                     </Row>
                     
                     <Form.Group>
-                        <Form.Label>Rangos Predefinidos</Form.Label>
+                        <Form.Label>{t("reportes.rangos")}</Form.Label>
                         <div className="mb-3"><ButtonGroup className="flex-wrap">
                             {[
-                                { label: 'Semana Actual', value: 'semana-actual' }, { label: 'Mes Actual', value: 'mes-actual' },
-                                { label: 'Última Semana', value: 'ultima-semana' }, { label: 'Último Mes', value: 'ultimo-mes' },
-                                { label: 'Último Trimestre', value: 'ultimo-trimestre' },
+                                { label: t("reportes.semanaActual"), value: 'semana-actual' }, { label: t("reportes.mesActual"), value: 'mes-actual' },
+                                { label: t("reportes.ultimaSemana"), value: 'ultima-semana' }, { label: t("reportes.ultimoMes"), value: 'ultimo-mes' },
+                                { label: t("reportes.ultimoTrimestre"), value: 'ultimo-trimestre' },
                             ].map(rango => (
-                                <Button key={rango.value} variant="outline-secondary" active={activeRange === rango.value} onClick={() => establecerRango(rango.value)} className="mb-1">{rango.label}</Button>
+                                <Button key={rango.value} variant="outline-info" active={activeRange === rango.value} onClick={() => establecerRango(rango.value)} className="mb-1">{rango.label}</Button>
                             ))}
                         </ButtonGroup></div>
                     </Form.Group>
 
                     <Row>
                         <Col md={4}><Form.Group controlId="tipoLab" className="mb-3">
-                            <Form.Label>Tipo de Laboratorio</Form.Label>
+                            <Form.Label>{t("reportes.laboratorio")}</Form.Label>
                             <Form.Select value={laboratorio} onChange={(e) => setLaboratorio(e.target.value)}>
-                                <option value="">Todos</option><option value="Laboratorio Conciliado">Laboratorio Conciliado</option><option value="Laboratorio Real">Laboratorio Real</option>
+                                <option value="">{t("reportes.todos")}</option><option value="Laboratorio Conciliado">Laboratorio Conciliado</option><option value="Laboratorio Real">Laboratorio Real</option>
                             </Form.Select>
                         </Form.Group></Col>
                         <Col md={4}><Form.Group controlId="tipoTurno" className="mb-3">
-                            <Form.Label>Turno</Form.Label>
+                            <Form.Label>{t("reportes.turno")}</Form.Label>
                             <Form.Select value={turno} onChange={(e) => setTurno(e.target.value)}>
-                                <option value="">Todos</option><option value="1">Turno 1</option><option value="2">Turno 2</option>
+                                <option value="">{t("reportes.todos")}</option><option value="1">Turno 1</option><option value="2">Turno 2</option>
                             </Form.Select>
                         </Form.Group></Col>
                         <Col md={4}><Form.Group controlId="idEnsayista" className="mb-3">
-                            <Form.Label>Ensayista</Form.Label>
+                            <Form.Label>{t("reportes.ensayista")}</Form.Label>
                             <Form.Select value={usuario} onChange={(e) => setUsuario(e.target.value)} disabled={isLoadingEnsayistas}>
-                                <option value="">Todos</option>
+                                <option value="">{t("reportes.todos")}</option>
                                 {isLoadingEnsayistas && <option disabled>Cargando...</option>}
                                 {ensayistas?.map(ensayista => (<option key={ensayista.id} value={ensayista.id}>{ensayista.name}</option>))}
                             </Form.Select>
@@ -297,21 +299,21 @@ export const GenerateReport = () => {
 
             <Stack direction="horizontal" gap={3} className="mt-4 mb-5">
                 <Button onClick={handleGenerarReporte} disabled={isUIBlocked} size="sm">
-                    {cargandoDatos ? 'Cargando datos...' : isGeneratingPdf ? 'Generando PDF...' : 'Generar Reporte'}
+                    {cargandoDatos ? 'Cargando datos...' : isGeneratingPdf ? 'Generando PDF...' : t("reportes.generarReporte")}
                     {isUIBlocked && <span className="spinner-border spinner-border-sm ms-2" role="status" aria-hidden="true"></span>}
                 </Button>
-                <Button variant="outline-secondary" onClick={limpiarYRestablecer} disabled={isUIBlocked}>Restablecer Filtros</Button>
+                <Button variant="outline-info" onClick={limpiarYRestablecer} disabled={isUIBlocked}>{t("reportes.restablecer")}</Button>
             </Stack>
             
             {!formError && urlPDF && (
                 <div ref={previewRef}>
                     <Card className="shadow">
-                        <Card.Header as="h5" className="bg-light">Previsualización del Reporte</Card.Header>
+                        <Card.Header as="h5" className="bg-light">{t("reportes.previsualizar")}</Card.Header>
                         <Card.Body>
                             <iframe src={urlPDF} title="Reporte PDF" width="100%" height="800px" style={{ border: '1px solid #dee2e6', borderRadius: '4px' }}/>
                             <div className="mt-3 text-center">
                                 <Button as="a" href={urlPDF} download={`Reporte_Produccion_${fechaInicio}_a_${fechaFin}.pdf`} variant="success" size="lg">
-                                    <i className="fas fa-download me-2"></i> Descargar PDF
+                                    <i className="fas fa-download me-2"></i> {t("reportes.descargar")}
                                 </Button>
                             </div>
                         </Card.Body>

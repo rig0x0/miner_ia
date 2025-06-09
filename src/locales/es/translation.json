@@ -1,0 +1,325 @@
+{
+  "topbar": {
+    "dashboard": "Tablero",
+    "language": "Idioma",
+    "logout": "Salir"
+  },
+  "sidebar": {
+    "supervisorGeneral": {
+      "dashboard": "Tablero",
+      "users": "Usuarios",
+      "seeUsers": "Ver Usuarios",
+      "data": "Datos",
+      "proyecciones": "Proyecciones",
+      "ensayes": "Ensayes",
+      "reportes": "Reportes"
+    },
+    "supervisordePlanta": {
+      "dashboard": "Tablero",
+      "data": "Datos",
+      "proyecciones": "Proyecciones",
+      "ensayes": "Ensayes",
+      "reportes": "Reportes"
+    },
+    "supervisordeEnsayista": {
+      "data": "Datos",
+      "proyecciones": "Proyecciones",
+      "ensayes": "Ensayes",
+      "reportes": "Reportes"
+    },
+    "ensayista": {
+      "dashboardEnsayista": "Tablero de Ensayista"
+    },
+    "logout": "Salir"
+  },
+  "tablero": {
+    "titulo": "Tablero",
+    "descripcionTitulo": "Aquí podrás encontrar un resumen de los datos de balance",
+    "cardEnsayeporDia": {
+      "titulo": "Ensayes del día",
+      "turno": "Turno",
+      "estatusPendiente": "Pendiente",
+      "pendienteDescripcion": "Ensaye pendiente de subir",
+      "infoExtra": "El ensayista aún no ha registrado los datos"
+    },
+    "cardResumenEnsaye": {
+      "titulo": "Resumen de Ensayes",
+      "descripcionError": "No se encontraron ensayes en las fechas seleccionadas."
+    },
+    "cardGrafico": {
+      "titulo": "Gráfico de datos",
+      "tipodeDato": {
+        "recuperaciones": "recuperaciones",
+        "contenidos": "contenidos",
+        "leyes": "leyes"
+      },
+      "selecciondeElemento": "Seleccionar Elementos a Graficar:",
+      "seleccionError": "Por favor, selecciona al menos un elemento para visualizar la gráfica.",
+      "seleccionNohayDatos": "No hay datos disponibles para la gráfica con la selección actual.",
+      "grafica": {
+        "titulo": "Gráfica de Resultados",
+        "tituloEjeYrecuperacion": "Recuperacion",
+        "tituloEjeYcontenido": "Contenido",
+        "tituloEjeYley": "Ley",
+        "elemento": {
+          "oro": "Oro",
+          "plata": "Plata",
+          "cobre": "Cobre",
+          "plomo": "Plomo",
+          "zinc": "Zinc",
+          "hierro": "Hierro"
+        }
+      }
+    }
+  },
+  "viewUsers": {
+    "eliminar": "Eliminar",
+    "editar": "Editar",
+    "todos": "Todos",
+    "actions": "Acciones",
+    "botonRegistrar": "Registrar Nuevo Usuario",
+    "labelId": "Buscar por ID de usuario",
+    "placeholderId": "Ingresa el ID del usuario",
+    "labelNombre": "Buscar por nombre de usuario",
+    "placeholderNombre": "Ingresa el nombre del usuario",
+    "labelRol": "Selecciona un rol",
+    "rolSupervisorGeneral": "Supervisor General",
+    "rolSupervisordePlanta": "Supervisor de Planta",
+    "rolSupervisordeEnsayista": "Supervisor de Ensayista",
+    "rolEnsayista": "Ensayista",
+    "modal": {
+      "correo": "Correo Electronico",
+      "titleRegistrar": "Registrar Nuevo Usuario",
+      "advertenciaCorreo": "El email es obligatorio",
+      "errorCorreo": "Email inválido",
+      "nombre": "Nombre del Usuario",
+      "advertenciaNombre": "El nombre del usuario es obligatorio",
+      "rol": "Seleccione el Rol del Usuario",
+      "labelRol": "Rol del Usuario",
+      "advertenciaRol": "El rol del usuario es obligatorio",
+      "modalRegistrar": {
+        "contraseña": "Escriba la Contraseña",
+        "advertenciaContraseña": "La contraseña es obligatoria",
+        "errorContraseña": "La contraseña debe tener al menos 6 caracteres",
+        "confirmar": "Confirme la Contraseña",
+        "placeholderConfirmar": "Confirmar Contraseña",
+        "advertenciaConfirmar": "Debe repetir la contraseña",
+        "errorConfirmar": "Las contraseñas no coinciden",
+        "cancelar": "Cancelar",
+        "registrar": "Registrar"
+      },
+      "modalEditar": {
+        "tituloEditar": "Editar Usuario",
+        "placeholderCorreo": "Escribe el correo del usuario",
+        "placeholderNombre": "Escribe el nombre del usuario",
+        "cambiar": "Cambiar Contraseña",
+        "contraseñaAnterior": "Escriba la Contraseña Anterior",
+        "placeholderAnterior": "Escribe la contraseña anterior",
+        "errorAnterior": "La anterior contraseña es obligatoria",
+        "errorMinLeg": "La contraseña debe tener al menos 6 caracteres",
+        "nueva": "Escriba la Nueva Contraseña",
+        "placeholderNueva": "Escribe la nueva contraseña",
+        "errorNueva": "La nueva contraseña es obligatoria",
+        "labelConfirmNewPassword": "Confirme la Nueva Contraseña",
+        "placeholderConfirmNewPassword": "Confirmar nueva contraseña",
+        "errorRepeatPasswordRequired": "Debe repetir la contraseña",
+        "errorPasswordsMismatch": "Las contraseñas no coinciden",
+        "buttonCancel": "Cancelar",
+        "buttonEditUser": "Editar Usuario"
+      },
+      "modalEliminar": {
+        "modalDeleteTitle": "Eliminar Usuario",
+        "modalDeleteConfirm": "¿Estás seguro de que quieres eliminar a este usuario",
+        "modalDeleteWarning": "Al eliminar al usuario, este perderá el acceso total a la plataforma y no podrás revertir el proceso.",
+        "buttonDeleteCancel": "Cancelar",
+        "buttonDeleteConfirm": "Sí, Eliminar",
+        "pageTitleUsers": "Usuarios",
+        "pageDescriptionUsers": "Gestiona los usuarios de la plataforma"
+      }
+    }
+  },
+  "proyecciones": {
+    "titulo": "Módulo de Proyecciones",
+    "descripcion": "Selecciona un elemento para ver las proyecciones basadas en IA",
+    "actualizar": "Actualizar",
+    "recuperacion": "Recuperación Actual",
+    "prediccion": "Promedio Predicción",
+    "tendencia": "Tendencia",
+    "tiempo": "Próximos 7 días",
+    "prediccionT7": "Predicción T+7",
+    "dia": "Dia 7",
+    "tituloGrafica": "Proyección de Recuperación",
+    "descripcionGrafica": "Datos históricos y predicciones para los próximos 7 días",
+    "historico": "Historico",
+    "prediccionLabel": "Prediccion",
+    "tituloDetalles": "Predicciones Detalladas",
+    "descripcionDetalles": "Valores específicos para cada día",
+    "day": "Dia",
+    "tituloTendencia": "Análisis de Tendencia",
+    "descripcionTendencia": "Interpretación de los datos",
+    "tendenciaUp": "Se espera una mejora en la recuperación durante los próximos días.",
+    "tendenciaDown": "Se prevé una disminución en la recuperación. Se recomienda revisar los procesos.",
+    "actualizacion": "Última actualización: "
+  },
+  "reportes": {
+    "errorFechaInicio": "La fecha de inicio es obligatoria.",
+    "errorFechaFin": "La fecha de fin es obligatoria.",
+    "titulo": "Reportes de Producción",
+    "descripcion": "Selecciona los filtros y presiona 'Generar Reporte' para empezar.",
+    "fechaInicio": "Fecha de Inicio",
+    "fechaFin": "Fecha de Fin",
+    "rangos": "Rangos Predefinidos",
+    "semanaActual": "Semana Actual",
+    "ultimaSemana": "Ultima Semana",
+    "ultimoTrimestre": "Ultimo Trimestre",
+    "mesActual": "Mes Actual",
+    "ultimoMes": "Ultimo Mes",
+    "laboratorio": "Tipo de laboratorio",
+    "todos": "Todos",
+    "turno": "Turno",
+    "ensayista": "Ensayista",
+    "generarReporte": "Generar Reporte",
+    "restablecer": "Restablecer filtros",
+    "descargar": "Descargar PDF",
+    "previsualizar": "Previsualización del Reporte",
+    "alerta": "Reporte listo para previsualizar"
+  },
+  "ensayesVista": {
+    "tituloCard": "Historial de Ensayes Registrados",
+    "titulo": "Ensayes",
+    "descripcion": "Visualiza los ensayes registrados en la plataforma",
+    "laboratorio": "Laboratorio",
+    "conciliado": "Conciliado",
+    "real": "Real",
+    "turno": "Turno",
+    "turno1": "Turno 1",
+    "turno2": "Turno 2",
+    "acciones": "Acciones",
+    "verMas": "Ver ensaye",
+    "cabeza": "Cabeza General",
+    "humedad": "Humedad",
+    "molienda": "Molienda Humeda",
+    "tipo": "Tipo de Ensaye",
+    "fecha": "Fecha",
+    "fechaInicial": "Fecha Inicial",
+    "fechaFinal": "Fecha Final",
+    "mostrar": "Mostrar: ",
+    "pagina": "Pagina",
+    "registros": "registros"
+  },
+  "detalles": {
+    "back": "Volver",
+    "title": "Detalles del Ensaye",
+    "descripcion": "Selecciona un elemento para ver las proyecciones basadas en IA",
+    "ensayista": "Ensayista :",
+    "turno": "Turno",
+    "cardEnsayes": "Ensayes",
+    "cardEnsayesDescripcion": "Detalle de elementos por cada etapa del circuito",
+    "vistaTabla": "Vista de Tabla",
+    "vistaGrafico": "Vista de Graficos",
+    "etapa": "Etapa ",
+    "porEtapa": " por Etapa",
+    "cardContenidos": "Contenidos",
+    "cardContenidosDescripcion": "Detalle de elementos por cada etapa del circuito",
+    "cardDistribucion": "Distribucion",
+    "cardDistribucionDescripcion": "Detalle de elementos por cada etapa del circuito"
+  },
+  "ensayista": {
+    "titulo": "Dashboard de Ensayista",
+    "descripcion": "Gestiona y visualiza los ensayes de laboratorio",
+    "registrar": "Registrar Nuevo Ensaye",
+    "registrarDescripcion": "Crea un nuevo registro de ensayo",
+    "cardTitle": "Historial de ensayes registrados",
+    "buscar": "Buscar..."
+  },
+  "formEnsayista": {
+    "title1": "Registrar Nuevo Ensaye",
+    "volver": "Volver al Dashboard",
+    "selecciona": "Selecciona el Turno",
+    "atras": "Paso Anterior",
+    "adelante": "Siguiente",
+    "title3": "Datos tecnicos del Ensaye",
+    "descripcion1": "Los campos marcados con ",
+    "descripcion2": " son obligatorios",
+    "title4": "Datos de circuitos y elementos",
+    "importar": "Importar datos desde Excel",
+    "limpiar": "Limpiar",
+    "formatos": "Formatos ",
+    "descargar": "Descargar Plantilla",
+    "verifique": "Archivo procesado. Verifique los datos en la tabla.",
+    "limpiarCelda": "Limpiar Celda",
+    "guardar": "Guardar Ensaye",
+    "guardando": "Guardando...",
+    "confirmar": "Confirmar Datos del Ensaye",
+    "resumen": "Resumen de Informacion General",
+    "lab": "Tipo lab",
+    "resumen2": "Resumen de datos de circuitos",
+    "volverEditar": "Volver a Editar",
+    "confYguardar": "Confirmar y Guardar"
+  },
+  "ensayeCard": {
+    "completado": "Completado",
+    "idEnsaye": "ID Ensaye",
+    "datos": "Datos del producto",
+    "activo": "Activo",
+    "inactivo": "Inactivo",
+    "rol": "Rol: Ensayista"
+  },
+  "card": {
+    "parametro": "Parametro",
+    "valor": "Valor",
+    "comparacion": "vs Ayer",
+    "recuperacion": "Recuperación",
+    "ley": "Ley",
+    "contenido": "Contenido"
+  },
+  "tabs": {
+    "recuperaciones": "Recuperaciones",
+    "contenidos": "Contenidos",
+    "leyes": "Leyes"
+  },
+  "detailsEnsaye": {
+    "dateFormat": "dd 'de' MMMM 'de' yyyy, HH:mm:ss",
+    "laboratorioConciliado": "Laboratorio Conciliado",
+    "laboratorioReal": "Laboratorio Real"
+  },
+  "modificar": {
+    "exito": "El usuario se ha registrado en el sistema satisfactoriamente.",
+    "error": "Error al crear el usuario: ",
+    "exitoUpdate": "El usuario con ID: {{id}}, se ha editado satisfactoriamente.",
+    "errorUpdate": "Error al intentar editar al usuario: ",
+    "exitoDelete": "El usuario ha sido eliminado del sistema",
+    "errorDelete": "Error al intentar eliminar al usuario: "
+  },
+  "mensajes": {
+    "noEncontrados": "Datos no encontrados",
+    "noEncontrados2": "No se encontraron datos coincidentes con las etapas y elementos esperados en el archivo.",
+    "error": "Error al procesar",
+    "errorMensaje": "Verifique el formato del archivo y que las cabeceras coincidan.",
+    "exito": "¡Datos Cargados!",
+    "exitoEnsaye": "¡Guardado!",
+    "exitoMensaje": "Ensaye registrado correctamente.",
+    "errorEnsaye": "Error",
+    "errorEnsayeMensaje": "No se pudo guardar el ensaye. Intenta de nuevo.",
+    "errorLectura": "Error de Lectura",
+    "errorLectura2": "No se pudo leer el archivo. Asegúrate que sea un Excel válido.",
+    "errorArchivo": "Error de Archivo",
+    "errorArchivo2": "Hubo un error al cargar el archivo.",
+    "vacio": "Archivo vacio",
+    "errorRegistrar": "Error al Registrar"
+  },
+  "tutorial":{
+    "titulo1": "Bienvenido al Editor de Tablas",
+    "contenido1": "Te guiaremos por las funciones principales para llenar datos eficientemente.",
+    "titulo2": "Importar desde Excel",
+    "contenido2": "Usa 'Seleccionar archivo' para cargar datos. Si es tu primera vez, descarga la plantilla.",
+    "titulo3": "Navegación con Teclado",
+    "contenido3": "Usa flechas para moverte. Tab/Shift+Tab horizontalmente, Enter/Shift+Enter verticalmente.",
+    "titulo4": "Copiar y Pegar",
+    "contenido4": "Clic derecho en una celda para copiar. Doble clic en otra para pegar.",
+    "titulo5": "Edición Rápida",
+    "contenido5": "Clic en una celda para editar o presiona F2. Enter para guardar cambios (implícito).",
+    "titulo6": "Guardar los Datos",
+    "contenido6": "Al terminar, clic en 'Guardar Ensaye' para registrar la información."
+  }
+}

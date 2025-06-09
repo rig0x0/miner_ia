@@ -3,7 +3,9 @@ import React from 'react'
 import { Badge, Card, CardBody, CardHeader, CardTitle } from 'react-bootstrap'
 import { Link } from 'react-router'
 import '../ComponentsStyles/EnsayeLink.css'
+import { useTranslation } from "react-i18next"; // <-- Solo necesitamos este hook
 export const EnsayeCard = ({ ensaye }) => {
+    const { t, i18n } = useTranslation();
 
     const formatDate = (dateString) => {
         const date = new Date(dateString)
@@ -30,11 +32,11 @@ export const EnsayeCard = ({ ensaye }) => {
                                 <div className="d-flex justify-content-between align-items-center">
                                     <CardTitle className="d-flex align-items-center mb-0">
                                         <Clock size={20} className="me-2" />
-                                        Turno {ensaye.turno}
+                                        {t("tablero.cardEnsayeporDia.turno")} {ensaye.turno}
                                     </CardTitle>
                                     <Badge bg="success" text="light" className="d-flex align-items-center">
                                         <CheckCircle size={14} className="me-1" />
-                                        Completado
+                                        {t("ensayeCard.completado")}
                                     </Badge>
                                 </div>
                             </CardHeader>
@@ -43,11 +45,11 @@ export const EnsayeCard = ({ ensaye }) => {
                                 {/* Información general */}
                                 <div className="row mb-3">
                                     <div className="col-md-6 mb-2">
-                                        <p className="text-muted mb-1"><small>ID Ensaye</small></p>
+                                        <p className="text-muted mb-1"><small>{t("ensayeCard.idEnsaye")}</small></p>
                                         <p className="fw-semibold">#{ensaye.id}</p>
                                     </div>
                                     <div className="col-md-6 mb-2">
-                                        <p className="text-muted mb-1"><small>Fecha</small></p>
+                                        <p className="text-muted mb-1"><small>{t("ensayesVista.fecha")}</small></p>
                                         <p className="fw-semibold d-flex align-items-center">
                                             <Calendar size={16} className="me-1" />
                                             {formatDate(ensaye.fecha)}
@@ -56,7 +58,7 @@ export const EnsayeCard = ({ ensaye }) => {
                                 </div>
 
                                 <div className="mb-3">
-                                    <p className="text-muted mb-1"><small>Tipo de Ensaye</small></p>
+                                    <p className="text-muted mb-1"><small>{t("ensayesVista.tipo")}</small></p>
                                     <Badge bg="primary" className="bg-opacity-10 text-primary border border-primary">
                                         {ensaye.tipo_ensaye}
                                     </Badge>
@@ -68,19 +70,19 @@ export const EnsayeCard = ({ ensaye }) => {
                                 <div className="mb-3">
                                     <h5 className="fw-semibold text-dark d-flex align-items-center">
                                         <FlaskConical size={16} className="me-2" />
-                                        Datos del Producto
+                                        {t("ensayeCard.datos")}
                                     </h5>
-                                    <div className="bg-white p-3 border rounded">
+                                    <div className="bg-gray p-3 border rounded">
                                         <div className="d-flex justify-content-between mb-2">
-                                            <span className="text-muted">Molienda Húmeda:</span>
+                                            <span className="text">{t("ensayesVista.molienda")}:</span>
                                             <span className="fw-medium">{formatNumber(ensaye.producto?.molienda_humeda)}</span>
                                         </div>
                                         <div className="d-flex justify-content-between mb-2">
-                                            <span className="text-muted">Humedad:</span>
+                                            <span className="text">{t("ensayesVista.humedad")}:</span>
                                             <span className="fw-medium">{formatNumber(ensaye.producto?.humedad)}%</span>
                                         </div>
                                         <div className="d-flex justify-content-between">
-                                            <span className="text-muted">Cabeza General:</span>
+                                            <span className="text">{t("ensayesVista.cabeza")}:</span>
                                             <span className="fw-medium">{formatNumber(ensaye.producto?.cabeza_general)}</span>
                                         </div>
                                     </div>
@@ -92,17 +94,17 @@ export const EnsayeCard = ({ ensaye }) => {
                                 <div>
                                     <h5 className="fw-semibold text-dark d-flex align-items-center">
                                         <User size={16} className="me-2" />
-                                        Ensayista
+                                        {t("viewUsers.rolEnsayista")}
                                     </h5>
-                                    <div className="bg-white p-3 border rounded">
+                                    <div className="bg-gray p-3 border rounded">
                                         <div className="d-flex justify-content-between align-items-center mb-2">
                                             <span className="fw-medium">{ensaye.user.name}</span>
                                             <Badge bg={ensaye.user.active ? "success" : "secondary"} className="text-uppercase small">
-                                                {ensaye.user.active ? "Activo" : "Inactivo"}
+                                                {ensaye.user.active ? t("ensayeCard.activo") : t("ensayeCard.Inactivo")}
                                             </Badge>
                                         </div>
-                                        <p className="text-muted mb-1">{ensaye.user.email}</p>
-                                        <p className="text-muted mb-0">Rol: Ensayista</p>
+                                        <p className="text mb-1">{ensaye.user.email}</p>
+                                        <p className="text mb-0">{t("ensayeCard.rol")}</p>
                                     </div>
                                 </div>
                             </CardBody>
@@ -114,19 +116,19 @@ export const EnsayeCard = ({ ensaye }) => {
                             <div className="d-flex justify-content-between align-items-center">
                                 <CardTitle className="d-flex align-items-center mb-0">
                                     <Clock size={20} className="me-2" />
-                                    Turno {ensaye.turno}
+                                    {t("tablero.cardEnsayeporDia.turno")} {ensaye.turno}
                                 </CardTitle>
                                 <Badge bg="warning" text="dark" className="d-flex align-items-center">
                                     <AlertCircle size={14} className="me-1" />
-                                    Pendiente
+                                    {t("tablero.cardEnsayeporDia.estatusPendiente")}
                                 </Badge>
                             </div>
                         </CardHeader>
 
                         <CardBody className="text-center py-4">
                             <FlaskConical size={48} className="text-warning mb-3" />
-                            <p className="fw-medium text-warning">Ensaye pendiente de subir</p>
-                            <p className="text-muted small">El ensayista aún no ha registrado los datos</p>
+                            <p className="fw-medium text-warning">{t("tablero.cardEnsayeporDia.pendienteDescripcion")}</p>
+                            <p className="text-muted small">{t("tablero.cardEnsayeporDia.infoExtra")}</p>
                         </CardBody>
                     </Card>
                 )

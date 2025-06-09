@@ -4,6 +4,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { CustomSpinner } from './CustomSpinner';
 import { useDebounce } from '../helpers/hooks/useDebounce'; // Asegúrate que la ruta sea correcta
+import { useTranslation } from "react-i18next"; // <-- Solo necesitamos este hook
 
 export const ServerSideTable = ({
   columns,
@@ -12,7 +13,7 @@ export const ServerSideTable = ({
   initialPageSize = 5,
   maxPageSize = 50,
   filtersConfig = [],
-  placeholder = "Buscar...",
+  placeholder ,
   enableDateFilter = true,
   enableGlobalSearch = true,
   addButton
@@ -20,6 +21,9 @@ export const ServerSideTable = ({
   // Estado para paginación
   const [currentPage, setCurrentPage] = useState(0);
   const [pageSize, setPageSize] = useState(initialPageSize);
+   const { t, i18n } = useTranslation();
+
+   placeholder = t("ensayista.buscar")
 
   // --> CAMBIO 1: Estado unificado para TODOS los filtros (selects, fechas, etc.)
   const [filters, setFilters] = useState(() => {
@@ -167,6 +171,7 @@ export const ServerSideTable = ({
         {enableGlobalSearch && (
           <div className="search-box">
             <input
+              className='form-control'
               type="text"
               placeholder={placeholder}
               value={textInputValues.globalSearch}
@@ -179,7 +184,7 @@ export const ServerSideTable = ({
         {enableDateFilter && (
           <div className="date-filter-container">
             <div className="date-picker-wrapper">
-              <label>Fecha Inicial</label>
+              <label>{t("ensayesVista.fechaInicial")}</label>
               <DatePicker
                 // La fecha seleccionada es la de inicio
                 selected={filters.dateRange.startDate}
@@ -200,7 +205,7 @@ export const ServerSideTable = ({
               />
             </div>
             <div className="date-picker-wrapper">
-              <label>Fecha Final</label>
+              <label>{t("ensayesVista.fechaFinal")}</label>
               <DatePicker
                 // La fecha seleccionada es la de fin
                 selected={filters.dateRange.endDate}
@@ -231,11 +236,12 @@ export const ServerSideTable = ({
             <label>{filter.label}</label>
             {filter.type === 'select' ? (
               <select
+                className='form-control'
                 value={filters[filter.id]}
                 onChange={(e) => handleInstantFilterChange(filter.id, e.target.value)}
                 disabled={isLoading}
               >
-                <option value="">Todos</option>
+                <option value="">{t("viewUsers.todos")}</option>
                 {filter.options?.map(option => (
                   <option key={option.value} value={option.value}>
                     {option.label}
@@ -244,6 +250,7 @@ export const ServerSideTable = ({
               </select>
             ) : ( // Se asume que es un input de texto
               <input
+              className='form-control'
                 type={filter.type || 'text'}
                 value={textInputValues[filter.id]}
                 onChange={(e) => handleTextInputChange(filter.id, e.target.value)}
@@ -275,7 +282,7 @@ export const ServerSideTable = ({
             Error al cargar los datos: {error.message}
           </div>
         ) : (
-          <table>
+          <table className="table">
             <thead>
               <tr>
                 {columns.map(column => (
@@ -324,7 +331,7 @@ export const ServerSideTable = ({
 
       <div className="pagination-controls">
         <div className="page-size-selector">
-          <span>Mostrar:</span>
+          <span>{t("ensayesVista.mostrar")}</span>
           <select
             value={pageSize}
             onChange={(e) => handlePageSizeChange(Number(e.target.value))}
@@ -337,7 +344,7 @@ export const ServerSideTable = ({
         </div>
 
         <div className="page-info">
-          Página {currentPage + 1} de {pageCount} ({totalCount} registros)
+          {t("ensayesVista.pagina")} {currentPage + 1} de {pageCount} ({totalCount} {t("ensayesVista.registros")})
         </div>
 
         <div className="page-buttons">

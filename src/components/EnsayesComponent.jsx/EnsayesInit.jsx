@@ -2,8 +2,10 @@ import React from 'react'
 import { ServerSideTable } from '../ServerSideTable';
 import clienteAxios from '../../config/axios';
 import { useNavigate } from 'react-router';
+import { useTranslation } from "react-i18next"; // <-- Solo necesitamos este hook
 
 export const EnsayesInit = () => {
+    const { t, i18n } = useTranslation();
 
     const navigate = useNavigate();
 
@@ -35,7 +37,7 @@ export const EnsayesInit = () => {
             accessorKey: 'id'
         },
         {
-            header: 'Fecha',
+            header: t("ensayesVista.fecha"),
             accessorKey: 'fecha',
             cell: ({ row }) => {
                 const date = new Date(row.original.fecha);
@@ -43,31 +45,31 @@ export const EnsayesInit = () => {
             }
         },
         {
-            header: 'Turno',
+            header: t("ensayesVista.turno"),
             accessorKey: 'turno'
         },
         {
-            header: 'Tipo de Ensaye',
+            header: t("ensayesVista.tipo"),
             accessorKey: 'tipo_ensaye'
         },
         {
-            header: 'Molienda Húmeda',
+            header: t("ensayesVista.molienda"),
             accessorKey: 'producto.molienda_humeda',
             cell: ({ row }) => row.original.producto?.molienda_humeda?.toFixed(2) || 'N/A'
         },
         {
-            header: 'Humedad',
+            header: t("ensayesVista.humedad"),
             accessorKey: 'producto.humedad',
             cell: ({ row }) => `${row.original.producto?.humedad || 0}%`
         },
         {
-            header: 'Cabeza General',
+            header: t("ensayesVista.cabeza"),
             accessorKey: 'producto.cabeza_general',
             cell: ({ row }) => row.original.producto?.cabeza_general?.toFixed(2) || 'N/A'
         },
         {
             id: 'acciones',
-            header: 'Acciones',
+            header: t("ensayesVista.acciones"),
             cell: ({ row }) => {
                 const idEnsaye = row.original.id;
                 return (
@@ -76,12 +78,12 @@ export const EnsayesInit = () => {
                             <button
                                 className="btn btn-primary btn-sm "
                                 type="button"
-                                title="Ver ensaye"
+                                title={t("ensayesVista.verMas")}
                                 onClick={() => {
                                     handleVerEnsaye(idEnsaye);
                                 }}
                             >
-                                <span className="fas fa-eye">Ver más</span>
+                                <span className="fas fa-eye">Ver mas</span>
                             </button>
                         </div>
                     </td>
@@ -93,20 +95,20 @@ export const EnsayesInit = () => {
     const filtersConfig = [
         {
             id: 'shift',
-            label: 'Turno',
+            label: t("ensayesVista.turno"),
             type: 'select',
             options: [
-                { value: 1, label: 'Turno 1' },
-                { value: 2, label: 'Turno 2' },
+                { value: 1, label: t("ensayesVista.turno1") },
+                { value: 2, label: t("ensayesVista.turno2") },
             ]
         },
         {
             id: 'laboratory',
-            label: 'Laboratorio',
+            label: t("ensayesVista.laboratorio"),
             type: 'select',
             options: [
-                { value: 'Laboratorio Conciliado', label: 'Conciliado' },
-                { value: 'Laboratorio Real', label: 'Real' },
+                { value: 'Laboratorio Conciliado', label: t("ensayesVista.conciliado") },
+                { value: 'Laboratorio Real', label: t("ensayesVista.real") },
             ]
         }
     ];
@@ -114,11 +116,11 @@ export const EnsayesInit = () => {
     return (
         <>
             <div className="container py-4">
-                <h1 className="h3 fw-bold">Ensayes</h1>
-                <p className="text-muted">Visualiza los ensayes registrados en la plataforma</p>
+                <h1 className="h3 fw-bold">{t("ensayesVista.titulo")}</h1>
+                <p className="text-muted">{t("ensayesVista.descripcion")}</p>
                 <div className="card shadow-sm">
                     <div className="card-header">
-                        <h4 className='fw-bold mb-3'>Historial de Ensayes Registrados</h4>
+                        <h4 className='fw-bold mb-3'>{t("ensayesVista.tituloCard")}</h4>
                         <ServerSideTable
                             columns={columns}
                             fetchData={fetchEnsayes}

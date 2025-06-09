@@ -12,13 +12,10 @@ import {
 } from "recharts";
 import clienteAxios from "../../config/axios";
 import { CustomSpinner } from "../CustomSpinner";
+import { useTranslation } from "react-i18next"; // <-- Solo necesitamos este hook
 
-const elements = {
-    Pb: { name: "Plomo", symbol: "Pb", color: "#3366cc" },
-    Zn: { name: "Zinc", symbol: "Zn", color: "#0b090a" },
-    Au: { name: "Oro", symbol: "Au", color: "#ff9900" },
-    Ag: { name: "Plata", symbol: "Ag", color: "#109618" },
-};
+
+
 
 const fetchPredictions = async (element) => {
     const res = await clienteAxios.post(`/predicciones/forecast/${element}`);
@@ -27,8 +24,16 @@ const fetchPredictions = async (element) => {
 };
 
 export const PrediccionInit = () => {
+     const { t, i18n } = useTranslation();
     const [selectedElement, setSelectedElement] = useState("Pb");
     const queryClient = useQueryClient();
+
+    const elements = {
+    Pb: { name: t("tablero.cardGrafico.grafica.elemento.plomo"), symbol: "Pb", color: "#3366cc" },
+    Zn: { name: t("tablero.cardGrafico.grafica.elemento.zinc"), symbol: "Zn", color: "#0b090a" },
+    Au: { name: t("tablero.cardGrafico.grafica.elemento.oro"), symbol: "Au", color: "#ff9900" },
+    Ag: { name: t("tablero.cardGrafico.grafica.elemento.plata"), symbol: "Ag", color: "#109618" },
+};
 
     const { data, isLoading, error, refetch } = useQuery({
         queryKey: ["predictions", selectedElement],
@@ -72,8 +77,8 @@ export const PrediccionInit = () => {
 
     return (
         <div className="container py-4">
-            <h1 className="h3 fw-bold">Módulo de Proyecciones</h1>
-            <p className="text-muted">Selecciona un elemento para ver las proyecciones basadas en IA</p>
+            <h1 className="h3 fw-bold">{t("proyecciones.titulo")}</h1>
+            <p className="text-muted">{t("proyecciones.descripcion")}</p>
 
             <div className="card my-3 shadow-sm">
                 <div className="card-body d-flex align-items-center gap-3">
@@ -85,12 +90,12 @@ export const PrediccionInit = () => {
                         ))}
                     </select>
                     <button
-                        className="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1"
+                        className="btn btn-outline-info btn-sm d-flex align-items-center gap-1"
                         onClick={refetch}
                         disabled={isLoading}
                     >
                         <span className={`spinner-border spinner-border-sm ${isLoading ? "" : "d-none"}`} />
-                        Actualizar
+                        {t("proyecciones.actualizar")}
                     </button>
                 </div>
             </div>
@@ -109,14 +114,14 @@ export const PrediccionInit = () => {
                             <div className="row g-3 mb-4">
                                 <div className="col-md-3">
                                     <div className="card p-3 shadow-sm">
-                                        <div className="fw-bold">Recuperación Actual</div>
+                                        <div className="fw-bold">{t("proyecciones.recuperacion")}</div>
                                         <div className="h4">{lastValue.toFixed(2)}%</div>
-                                        <small className="text-muted">{current.name}</small>
+                                        <small className="text">{current.name}</small>
                                     </div>
                                 </div>
                                 <div className="col-md-3">
                                     <div className="card p-3 shadow-sm">
-                                        <div className="fw-bold">Promedio Predicción</div>
+                                        <div className="fw-bold">{t("proyecciones.prediccion")}</div>
                                         <div className="h4">{avgPred.toFixed(2)}%</div>
                                         <small className={`text-${trend === "alta" ? "success" : "danger"}`}>
                                             {trend === "alta" ? "▲" : "▼"} {(avgPred - lastValue).toFixed(2)}%
@@ -125,16 +130,16 @@ export const PrediccionInit = () => {
                                 </div>
                                 <div className="col-md-3">
                                     <div className="card p-3 shadow-sm">
-                                        <div className="fw-bold">Tendencia</div>
+                                        <div className="fw-bold">{t("proyecciones.tendencia")}</div>
                                         <div className="h4 text-capitalize">{data.trend}</div>
-                                        <small className="text-muted">Próximos 7 días</small>
+                                        <small className="text-muted">{t("proyecciones.tiempo")}</small>
                                     </div>
                                 </div>
                                 <div className="col-md-3">
                                     <div className="card p-3 shadow-sm">
-                                        <div className="fw-bold">Predicción T+7</div>
+                                        <div className="fw-bold">{t("proyecciones.prediccionT7")}</div>
                                         <div className="h4">{data.predictions.t_plus_7.toFixed(2)}%</div>
-                                        <small className="text-muted">Día 7</small>
+                                        <small className="text-muted">{t("proyecciones.dia")}</small>
                                     </div>
                                 </div>
                             </div>
@@ -143,10 +148,10 @@ export const PrediccionInit = () => {
                             <div className="card shadow-sm">
                                 <div className="card-body">
                                     <h5 className="card-title">
-                                        Proyección de Recuperación - {current.name} ({current.symbol})
+                                        {t("proyecciones.tituloGrafica")} - {current.name} ({current.symbol})
                                     </h5>
                                     <p className="card-subtitle mb-3 text-muted">
-                                        Datos históricos y predicciones para los próximos 7 días
+                                        {t("proyecciones.descripcionGrafica")}
                                     </p>
                                     <ResponsiveContainer width="100%" height={400}>
                                         <LineChart data={chartData}>
@@ -154,7 +159,7 @@ export const PrediccionInit = () => {
                                             <YAxis domain={["dataMin - 1", "dataMax + 1"]} tickFormatter={(v) => `${v.toFixed(1)}%`} />
                                             <Tooltip
                                                 formatter={(v, name, props) =>
-                                                    [`${v?.toFixed(2)}%`, props.dataKey === "historico" ? "Histórico" : "Predicción"]
+                                                    [`${v?.toFixed(2)}%`, props.dataKey === "historico" ? t("proyecciones.historico") : t("proyecciones.prediccionLabel")]
                                                 }
                                                 labelStyle={{ fontWeight: "bold" }}
                                             />
@@ -172,7 +177,7 @@ export const PrediccionInit = () => {
                                                 dataKey="historico"
                                                 stroke={current.color}
                                                 strokeWidth={2}
-                                                name="Histórico"
+                                                name={t("proyecciones.historico")}
                                                 dot={{ r: 3 }}
                                                 isAnimationActive={false}
                                                 connectNulls={true}
@@ -183,7 +188,7 @@ export const PrediccionInit = () => {
                                                 dataKey="prediccion"
                                                 stroke="#d62728"
                                                 strokeWidth={2}
-                                                name="Predicción"
+                                                name={t("proyecciones.prediccionLabel")}
                                                 dot={{ r: 3 }}
                                                 isAnimationActive={false}
                                                 connectNulls={true}
@@ -196,13 +201,13 @@ export const PrediccionInit = () => {
                                 <div className="col-6">
                                     <div className="card mb-4 shadow-sm">
                                         <div className="card-header">
-                                            <h5 className="card-title mb-3">Predicciones Detalladas</h5>
-                                            <h6 className="card-subtitle text-muted">Valores específicos para cada día</h6>
+                                            <h5 className="card-title mb-3">{t("proyecciones.tituloDetalles")}</h5>
+                                            <h6 className="card-subtitle text-muted">{t("proyecciones.descripcionDetalles")}</h6>
                                         </div>
                                         <div className="card-body">
                                             {Object.entries(data.predictions).map(([key, value]) => (
                                                 <div key={key} className="d-flex justify-content-between align-items-center mb-2">
-                                                    <span className="fw-medium small">{key.replace("t_plus_", "Día +")}</span>
+                                                    <span className="fw-medium small">{key.replace("t_plus_", t("proyecciones.day")+ " +")}</span>
                                                     <span className="badge bg-dark border">{value.toFixed(2)}%</span>
                                                 </div>
                                             ))}
@@ -212,33 +217,33 @@ export const PrediccionInit = () => {
                                 <div className="col-6">
                                     <div className="card shadow-sm">
                                         <div className="card-header">
-                                            <h5 className="card-title mb-3">Análisis de Tendencia</h5>
-                                            <h6 className="card-subtitle text-muted">Interpretación de los datos</h6>
+                                            <h5 className="card-title mb-3">{t("proyecciones.tituloTendencia")}</h5>
+                                            <h6 className="card-subtitle text-muted">{t("proyecciones.descripcionTendencia")}</h6>
                                         </div>
                                         <div className="card-body">
                                             <div className="mb-3">
                                                 <div className="d-flex align-items-center gap-2 mb-2">
                                                     {trendDirection === "up" ? (
                                                         <>
-                                                            <span className="fw-medium text-success"> <i class="fa-solid fa-arrow-trend-up"></i> Tendencia: {data.trend}</span>
+                                                            <span className="fw-medium text-success"> <i class="fa-solid fa-arrow-trend-up"></i> {t("proyecciones.tendencia")}: {data.trend}</span>
                                                         </>
                                                     ) : (
                                                         <>
 
-                                                            <span className="fw-medium text-danger"><i class="fa-solid fa-arrow-trend-down"></i> Tendencia: {data.trend}</span>
+                                                            <span className="fw-medium text-danger"><i class="fa-solid fa-arrow-trend-down"></i> {t("proyecciones.tendencia")}: {data.trend}</span>
                                                         </>
                                                     )}
 
                                                 </div>
-                                                <p className="text-muted small mb-0">
+                                                <p className="text small mb-0">
                                                     {trendDirection === "up"
-                                                        ? "Se espera una mejora en la recuperación durante los próximos días."
-                                                        : "Se prevé una disminución en la recuperación. Se recomienda revisar los procesos."}
+                                                        ? t("proyecciones.tendenciaUp")
+                                                        : t("proyecciones.tendenciaDown")}
                                                 </p>
                                             </div>
                                             <div className="pt-3 border-top">
-                                                <p className="text-muted small mb-0">
-                                                    Última actualización: {new Date().toLocaleString("es-ES")}
+                                                <p className="text small mb-0">
+                                                    {t("proyecciones.actualizacion")} {new Date().toLocaleString("es-ES")}
                                                 </p>
                                             </div>
                                         </div>

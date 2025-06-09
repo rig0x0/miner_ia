@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Button, ButtonGroup } from 'react-bootstrap';
+import { useTranslation } from "react-i18next"; // <-- Solo necesitamos este hook
 
 // Paleta de colores mejorada (puedes ajustarla o mantener la tuya)
 const ELEMENT_COLORS = {
@@ -14,11 +15,7 @@ const ELEMENT_COLORS = {
     default: '#3498DB' // Azul para default
 };
 
-// Nombres descriptivos para los elementos (opcional, para leyendas/tooltips)
-const ELEMENT_NAMES = {
-    Au: 'Oro', Ag: 'Plata', Cu: 'Cobre',
-    Pb: 'Plomo', Zn: 'Zinc', Fe: 'Hierro',
-};
+
 
 const getUnitForElement = (tipo, elemento) => {
     if (tipo === 'Recuperaciones') return '%';
@@ -34,14 +31,23 @@ const getUnitForElement = (tipo, elemento) => {
 };
 
 export const GraphComponent = ({ 
-    graphTitle = "Gráfica de Resultados", // Título por defecto
+    graphTitle,
     tipo, 
     datosFiltrados, 
     unidadSeleccionada, 
     onUnidadChange 
 }) => {
+    const { t, i18n } = useTranslation();
     console.log(datosFiltrados)
     const [dynamicYDomain, setDynamicYDomain] = useState(['auto', 'auto']);
+
+    // Nombres descriptivos para los elementos (opcional, para leyendas/tooltips)
+const ELEMENT_NAMES = {
+    Au: t("tablero.cardGrafico.grafica.elemento.oro"), Ag: t("tablero.cardGrafico.grafica.elemento.plata"), Cu: t("tablero.cardGrafico.grafica.elemento.cobre"),
+    Pb: t("tablero.cardGrafico.grafica.elemento.plomo"), Zn: t("tablero.cardGrafico.grafica.elemento.zinc"), Fe: t("tablero.cardGrafico.grafica.elemento.hierro"),
+};
+
+    
 
     const elementosEnDatos = useMemo(() => {
         return Object.keys(datosFiltrados || {}).filter(key => key !== 'Fechas');
@@ -99,6 +105,8 @@ export const GraphComponent = ({
         }
     }, [datosFiltrados, tipo, unidadSeleccionada, elementosEnDatos]);
 
+    const title = graphTitle || t("tablero.cardGrafico.grafica.titulo");
+
     const chartData = useMemo(() => {
         if (!datosFiltrados || !datosFiltrados.Fechas || datosFiltrados.Fechas.length === 0) {
             return [];
@@ -120,16 +128,16 @@ export const GraphComponent = ({
     let yAxisTickUnit = '';
 
     if (tipo === 'Recuperaciones') {
-        yAxisLabelText = 'Recuperación';
+        yAxisLabelText = t("tablero.cardGrafico.grafica.tituloEjeYrecuperacion");
         yAxisTickUnit = '%'; // Para añadir a los ticks del eje Y
     } else if (tipo === 'Contenidos') {
-        yAxisLabelText = 'Contenido';
+        yAxisLabelText = t("tablero.cardGrafico.grafica.tituloEjeYcontenido");
     } else if (tipo === 'Leyes') {
         if (unidadSeleccionada === 'g/t') {
-            yAxisLabelText = 'Ley (Au, Ag)';
+            yAxisLabelText = `${t("tablero.cardGrafico.grafica.tituloEjeYley")} (Au, Ag)`;
             yAxisTickUnit = 'g/t';
         } else {
-            yAxisLabelText = 'Ley (Otros)';
+            yAxisLabelText = `${t("tablero.cardGrafico.grafica.tituloEjeYley")} (Otros)`;
             yAxisTickUnit = '%';
         }
     }
@@ -200,7 +208,7 @@ export const GraphComponent = ({
                 border: '1px dashed #ccc', borderRadius: '8px', padding: '30px', margin: '15px',
                 textAlign: 'center', backgroundColor: '#f9f9f9'
             }}>
-                <h5 style={{ color: '#555', marginBottom: '15px' }}>{graphTitle}</h5>
+                <h5 style={{ color: '#555', marginBottom: '15px' }}>{title}</h5>
                 <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="#bbb" className="bi bi-graph-up-arrow" viewBox="0 0 16 16" style={{marginBottom: '10px'}}>
                     <path fillRule="evenodd" d="M0 0h1v15h15v1H0zm10 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V4.9l-3.613 4.417a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61L13.445 4H10.5a.5.5 0 0 1-.5-.5"/>
                 </svg>
@@ -216,7 +224,7 @@ export const GraphComponent = ({
             padding: '25px', backgroundColor: '#fff', 
         }}>
             <h4 style={{ textAlign: 'center', color: '#333', marginBottom: '15px', fontWeight: '600' }}>
-                {graphTitle}
+                {title}
             </h4>
 
             {tipo === 'Leyes' && (

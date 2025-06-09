@@ -4,17 +4,18 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Table from 'react-bootstrap/Table';
 import '../components/ComponentsStyles/Modal.css';
-
+import { useTranslation } from "react-i18next"; // <-- Solo necesitamos este hook
 
 export const CardComponent = ({ elementos }) => {
+    const { t } = useTranslation();
 
     const nombres = {
-        Au: "Oro",
-        Ag: "Plata",
-        Pb: "Plomo",
-        Zn: "Zinc",
-        Fe: "Hierro",
-        Cu: "Cobre",
+        Au: t("tablero.cardGrafico.grafica.elemento.oro"),
+        Ag: t("tablero.cardGrafico.grafica.elemento.plata"),
+        Pb: t("tablero.cardGrafico.grafica.elemento.plomo"),
+        Zn: t("tablero.cardGrafico.grafica.elemento.zinc"),
+        Fe: t("tablero.cardGrafico.grafica.elemento.hierro"),
+        Cu: t("tablero.cardGrafico.grafica.elemento.cobre"),
         Insoluble: "Insoluble",
         Cd: "Cadmio",
         Ar: "Argón"
@@ -61,33 +62,33 @@ export const CardComponent = ({ elementos }) => {
         <Row xs={1} md={3} className="g-4">
             {elementos.map((item, idx) => (
                 <Col key={idx}>
-                    <Card className=" border-2 rounded-4">
-                        <Card.Body className="p-4">
-                            {/* Título con colores */}
-                            <Card.Title className="mb-3" style={{ fontSize: '20px' }}>
-                                <span style={{ color: colores[item.elemento] || "black", fontWeight: "600" }}>
+                    <Card>
+                        <Card.Body className='pb-0'>
+                            <Card.Title style={{ fontSize: '19px' }}>
+                                <span style={{ color: colores[item.elemento] || "black", fontWeight: "bold" }}>
                                     {item.elemento}
                                 </span>
-                                <span className="text-muted ms-2" style={{ fontWeight: 400 }}>
-                                    {nombres[item.elemento] || "Desconocido"}
-                                </span>
+                                {" - "}
+                                <span className="card-subtitle-text">
+  {nombres[item.elemento] || "Desconocido"}
+</span>
                             </Card.Title>
-
-                            {/* Tabla estilizada */}
-                            <Table responsive borderless className="mb-0 align-middle">
-                                <thead className="text-muted">
-                                    <tr>
-                                        <th className="text-start">Parámetro</th>
-                                        <th>Valor</th>
-                                        <th>vs Ayer</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="fw-medium">
-                                    {renderRow('Recuperación', item.recuperacion, item.comparativa_recuperacion, item.unidad?.recuperacion)}
-                                    {renderRow('Ley', item.ley, item.comparativa_ley, item.unidad?.ley)}
-                                    {renderRow('Contenido', item.contenido, item.comparativa_contenido, item.unidad?.contenido)}
-                                </tbody>
-                            </Table>
+                            <Card.Text style={{ fontSize: '10px' }}>
+                                <Table className="text-center">
+                                    <thead>
+                                        <tr>
+                                            <th className='text-start'> {t("card.parametro")}</th>
+                                            <th> {t("card.valor")}</th>
+                                            <th> {t("card.comparacion")}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {renderRow(t("card.recuperacion"), item.recuperacion, item.comparativa_recuperacion, item.unidad?.recuperacion)}
+                                        {renderRow(t("card.ley"), item.ley, item.comparativa_ley, item.unidad?.ley)}
+                                        {renderRow(t("card.contenido"), item.contenido, item.comparativa_contenido, item.unidad?.contenido)}
+                                    </tbody>
+                                </Table>
+                            </Card.Text>
                         </Card.Body>
                     </Card>
                 </Col>

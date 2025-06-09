@@ -5,8 +5,10 @@ import { Modal, Button } from 'react-bootstrap';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import Swal from 'sweetalert2';
 import clienteAxios from '../../config/axios';
+import { useTranslation } from "react-i18next"; // <-- Solo necesitamos este hook
 
 export const EnsayeForm = () => {
+  const { t: translate, i18n } = useTranslation();
 
   const navigate = useNavigate();
 
@@ -234,11 +236,11 @@ export const EnsayeForm = () => {
         procesarDatosImportados(jsonData); // Esta función ya muestra Swal de éxito/error
       } catch (error) {
         console.error('Error al leer archivo:', error);
-        Swal.fire("Error de Lectura", "No se pudo leer el archivo. Asegúrate que sea un Excel válido.", "error");
+        Swal.fire(t("mensajes.errorLectura"), t("mensajes.errorLectura2"), "error");
       }
     };
     reader.onerror = () => {
-      Swal.fire("Error de Archivo", "Hubo un error al cargar el archivo.", "error");
+      Swal.fire(t("mensajes.errorArchivo"), t("mensajes.errorArchivo2"), "error");
     };
     reader.readAsArrayBuffer(file);
   };
@@ -290,16 +292,16 @@ export const EnsayeForm = () => {
       }
 
       if (datosImportadosCount === 0) {
-        Swal.fire("Datos no Encontrados", "No se encontraron datos coincidentes con las etapas y elementos esperados en el archivo.", "warning");
+        Swal.fire(t("mensajes.noEncontrados"), t("mensajes.noEncontrados2"), "warning");
         return;
       }
 
       setCircuitos(nuevosCircuitos);
       setArchivoCargado(true);
-      Swal.fire("¡Datos Cargados!", `${datosImportadosCount} valore(s) importado(s) satisfactoriamente.`, "success");
+      Swal.fire(t("mensaje.exito"), `${datosImportadosCount} valore(s) importado(s) satisfactoriamente.`, "success");
     } catch (error) {
       console.error('Error al procesar archivo:', error);
-      Swal.fire("Error al Procesar", error.message || "Verifique el formato del archivo y que las cabeceras coincidan.", "error");
+      Swal.fire(t("mensajes.error"), error.message || t("mensajes.errorMensaje"), "error");
     } finally {
       if (fileInputRef.current) fileInputRef.current.value = ''; // Limpiar el input de archivo
     }
@@ -353,13 +355,13 @@ export const EnsayeForm = () => {
     },
     onSuccess: (data) => {
       console.log('Ensaye Registrado', data);
-      Swal.fire('¡Guardado!', 'Ensaye registrado correctamente.', 'success');
+      Swal.fire(t("mensajes.exitoEnsaye"), t("mensajes.exitoMensaje"), 'success');
       setIsSubmitting(false);
     },
     onError: (error) => {
       console.log(error)
       // Manejo de error si la solicitud falla.
-      Swal.fire('Error', 'No se pudo guardar el ensaye. Intenta de nuevo.', 'error');
+      Swal.fire(t("mensajes.errorEnsaye"), t("mensajes.errorEnsayeMensaje"), 'error');
       setIsSubmitting(false);
     },
   });
@@ -420,7 +422,7 @@ export const EnsayeForm = () => {
       if (response.status !== 201) {
         Swal.fire({
           icon: 'error',
-          title: 'Error al Registrar',
+          title: t("mensajes.errorRegistrar"),
           html: response.data.detail || 'No se pudo registrar el ensaye. Intente nuevamente.',
         });
         setIsSubmitting(false);
@@ -579,12 +581,12 @@ export const EnsayeForm = () => {
 
   const TutorialModalComponent = ({ step, onNext, onPrev, onSkip }) => { // Renombrado para evitar conflicto de nombre
     const steps = [
-      { title: "Bienvenido al Editor de Tablas", content: "Te guiaremos por las funciones principales para llenar datos eficientemente.", position: "center", highlight: true },
-      { title: "Importar desde Excel", content: "Usa 'Seleccionar archivo' para cargar datos. Si es tu primera vez, descarga la plantilla.", position: "center", target: ".import-section", highlight: "#importar-archivo" },
-      { title: "Navegación con Teclado", content: "Usa flechas para moverte. Tab/Shift+Tab horizontalmente, Enter/Shift+Enter verticalmente.", position: "center", highlight: "#ensaye-table" },
-      { title: "Copiar y Pegar", content: "Clic derecho en una celda para copiar. Doble clic en otra para pegar.", position: "center", highlight: "#ensaye-table" },
-      { title: "Edición Rápida", content: "Clic en una celda para editar o presiona F2. Enter para guardar cambios (implícito).", position: "center", highlight: "#ensaye-table" },
-      { title: "Guardar los Datos", content: "Al terminar, clic en 'Guardar Ensaye' para registrar la información.", position: "center", highlight: "#saveButton" }
+      { title: t("tutorial.titulo1"), content: t("tutorial.contenido1"), position: "center", highlight: true },
+      { title: t("tutorial.titulo2"), content: t("tutorial.contenido2"), position: "center", target: ".import-section", highlight: "#importar-archivo" },
+      { title: t("tutorial.titulo3"), content: t("tutorial.contenido3"), position: "center", highlight: "#ensaye-table" },
+      { title: t("tutorial.titulo4"), content: t("tutorial.contenido4"), position: "center", highlight: "#ensaye-table" },
+      { title: t("tutorial.titulo5"), content: t("tutorial.contenido5"), position: "center", highlight: "#ensaye-table" },
+      { title: t("tutorial.titulo6"), content: t("tutorial.contenido6"), position: "center", highlight: "#saveButton" }
     ];
     const currentStepData = steps[step - 1] || steps[0];
 
@@ -623,7 +625,7 @@ export const EnsayeForm = () => {
           <div className="d-flex justify-content-between mt-4">
             <div>{step > 1 && (<Button variant="outline-secondary" size="sm" onClick={onPrev}>Anterior</Button>)}</div>
             <div>
-              <Button variant="outline-secondary" size="sm" onClick={onSkip} className="me-2">Saltar Tutorial</Button>
+              <Button  variant="outline-secondary" size="sm" onClick={onSkip} className="me-2 fondoBtnVista">Saltar Tutorial</Button>
               <Button variant="primary" size="sm" onClick={onNext}>
                 {step === steps.length ? 'Finalizar' : 'Siguiente'}
               </Button>
@@ -649,9 +651,9 @@ export const EnsayeForm = () => {
   return (
     <div className="container py-4" style={{ maxWidth: '100%' }}>
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h1 className='text-center fw-bold mb-0 h2'>Registrar Nuevo Ensaye</h1>
-        <Link to="/ensaye" className="btn btn-sm btn-outline-secondary">
-          <i className="fas fa-arrow-left me-2"></i> Volver al Dashboard
+        <h1 className='text-center fw-bold mb-0 h2'>{translate("formEnsayista.title1")}</h1>
+        <Link to="/ensaye" className="btn fondoBtnVista btn-outline-secondary">
+          <i className="fas fa-arrow-left me-2"></i> {translate("formEnsayista.volver")}
         </Link>
       </div>
 
@@ -668,7 +670,7 @@ export const EnsayeForm = () => {
         <div className="card-body p-4 p-md-5">
           {/* Paso 1: Selección de Turno */}
           <div style={{ display: paso === 1 ? 'block' : 'none', animation: paso === 1 ? 'fadeIn 0.5s ease' : '' }}>
-            <h3 className="fw-bold text-center mb-4 text-primary"><span className="badge bg-primary me-2">1</span>Selecciona el Turno</h3>
+            <h3 className="fw-bold text-center mb-4 text-primary"><span className="badge bg-primary me-2">1</span>{translate("formEnsayista.selecciona")}</h3>
             <div className="row g-3 justify-content-center">
               {[1, 2].map((t) => (
                 <div className="col-md-5" key={t}>
@@ -681,7 +683,7 @@ export const EnsayeForm = () => {
                   >
                     <div className="card-body d-flex flex-column justify-content-center p-4">
                       <i className={`fas ${t === 1 ? 'fa-sun' : 'fa-moon'} fa-2x mb-2 ${turno === t ? 'text-primary' : 'text-muted'}`}></i>
-                      <h4 className="fw-semibold mb-0">TURNO {t}</h4>
+                      <h4 className="fw-semibold mb-0">{translate("ensayesVista.turno")} {t}</h4>
                     </div>
                   </div>
                 </div>
@@ -691,7 +693,7 @@ export const EnsayeForm = () => {
 
           {/* Paso 2: Tipo de laboratorio */}
           <div style={{ display: paso === 2 ? 'block' : 'none', animation: paso === 2 ? 'fadeIn 0.5s ease' : '' }}>
-            <h3 className="fw-bold text-center mb-4 text-primary"><span className="badge bg-primary me-2">2</span>Tipo de Laboratorio</h3>
+            <h3 className="fw-bold text-center mb-4 text-primary"><span className="badge bg-primary me-2">2</span>{translate("reportes.laboratorio")}</h3>
             <div className="row g-3 justify-content-center">
               {['Conciliado', 'Real'].map((tipo) => (
                 <div className="col-md-5" key={tipo}>
@@ -711,18 +713,18 @@ export const EnsayeForm = () => {
               ))}
             </div>
             <div className="text-center mt-5">
-              <Button variant="outline-secondary" onClick={volverPaso}><i className="fas fa-arrow-left me-2"></i>Paso Anterior</Button>
+              <Button className="fondoBtnVista" variant="outline-secondary" onClick={volverPaso}><i className="fas fa-arrow-left me-2"></i>{translate("formEnsayista.atras")}</Button>
             </div>
           </div>
 
           {/* Paso 3: Datos técnicos */}
           <div style={{ display: paso === 3 ? 'block' : 'none', animation: paso === 3 ? 'fadeIn 0.5s ease' : '' }}>
-            <h3 className="fw-bold text-center mb-4 text-primary"><span className="badge bg-primary me-2">3</span>Datos Técnicos del Ensaye</h3>
-            <p className="text-center text-muted mb-4"><small>Los campos marcados con <span className="text-danger">*</span> son obligatorios.</small></p>
+            <h3 className="fw-bold text-center mb-4 text-primary"><span className="badge bg-primary me-2">3</span>{translate("formEnsayista.title3")}</h3>
+            <p className="text-center text-muted mb-4"><small>{translate("formEnsayista.descripcion1")} <span className="text-danger">*</span> {translate("formEnsayista.descripcion2")}</small></p>
             <div className="row g-3">
-              {[{ name: 'molienda_humeda', label: 'Molienda Húmeda (t/d)', placeholder: 'Ej: 2041.32', type: 'number', step: "0.01" },
-              { name: 'humedad', label: 'Humedad (%)', placeholder: 'Ej: 3.0', type: 'number', step: "0.1", max: "100" },
-              { name: 'cabeza_general', label: 'Cabeza General (g/t)', placeholder: 'Ej: 1.50', type: 'number', step: "0.01" }
+              {[{ name: 'molienda_humeda', label: translate("ensayesVista.molienda") +' (t/d)', placeholder: 'Ej: 2041.32', type: 'number', step: "0.01" },
+              { name: 'humedad', label: translate("ensayesVista.humedad")+' (%)', placeholder: 'Ej: 3.0', type: 'number', step: "0.1", max: "100" },
+              { name: 'cabeza_general', label: translate("ensayesVista.cabeza")+' (g/t)', placeholder: 'Ej: 1.50', type: 'number', step: "0.01" }
               ].map(field => (
                 <div className="col-md-4" key={field.name}>
                   <label className="form-label fw-semibold">{field.label} <span className="text-danger">*</span></label>
@@ -732,7 +734,7 @@ export const EnsayeForm = () => {
                 </div>
               ))}
               <div className="col-md-12">
-                <label className="form-label fw-semibold">Fecha <span className="text-danger">*</span></label>
+                <label className="form-label fw-semibold">{translate("ensayesVista.fecha")} <span className="text-danger">*</span></label>
                 <input
                   type="date"
                   className="form-control form-control-lg"
@@ -745,37 +747,37 @@ export const EnsayeForm = () => {
               </div>
             </div>
             <div className="d-flex justify-content-between mt-5">
-              <Button variant="outline-secondary" onClick={volverPaso}><i className="fas fa-arrow-left me-2"></i>Paso Anterior</Button>
+              <Button className="fondoBtnVista" variant="outline-secondary" onClick={volverPaso}><i className="fas fa-arrow-left me-2"></i>{translate("formEnsayista.atras")}</Button>
               <Button variant="primary" onClick={avanzarPaso} disabled={!formData.molienda_humeda || !formData.humedad || !formData.cabeza_general}>
-                Siguiente <i className="fas fa-arrow-right ms-2"></i>
+                {translate("formEnsayista.adelante")} <i className="fas fa-arrow-right ms-2"></i>
               </Button>
             </div>
           </div>
 
           {/* Paso 4: Circuitos y elementos */}
           <div style={{ display: paso === 4 ? 'block' : 'none', animation: paso === 4 ? 'fadeIn 0.5s ease' : '' }}>
-            <h3 className="fw-bold text-center mb-4 text-primary"><span className="badge bg-primary me-2">4</span>Datos de Circuitos y Elementos</h3>
+            <h3 className="fw-bold text-center mb-4 text-primary"><span className="badge bg-primary me-2">4</span>{translate("formEnsayista.title4")}</h3>
             <div className="card mb-4 border-primary-subtle import-section">
               <div className="card-body" id='importar-archivo'>
-                <h5 className="fw-bold mb-3 text-primary">Importar Datos desde Excel</h5>
+                <h5 className="fw-bold mb-3 text-primary">{translate("formEnsayista.importar")}</h5>
                 <div className="row align-items-center g-2">
                   <div className="col-md-7 mb-2 mb-md-0">
                     <div className="input-group">
                       <input type="file" className="form-control" accept=".xlsx,.xls,.csv" onChange={handleFileImport} ref={fileInputRef} />
-                      <Button variant="outline-secondary" onClick={() => { fileInputRef.current.value = ''; setArchivoCargado(false); }}>Limpiar</Button>
+                      <Button className="fondoBtnVista" variant="outline-secondary" onClick={() => { fileInputRef.current.value = ''; setArchivoCargado(false); }}>{translate("formEnsayista.limpiar")}</Button>
                     </div>
-                    <small className="form-text text-muted">Formatos: .xlsx, .xls, .csv</small>
+                    <small className="form-text text-muted">{translate("formEnsayista.formatos")}: .xlsx, .xls, .csv</small>
                   </div>
                   <div className="col-md-5 text-md-end">
                     <Button variant="outline-info" onClick={descargarPlantilla}>
-                      <i className="fas fa-file-download me-2"></i>Descargar Plantilla
+                      <i className="fas fa-file-download me-2"></i>{translate("formEnsayista.descargar")}
                     </Button>
                   </div>
                 </div>
                 {archivoCargado && (
                   <div className="alert alert-success mt-3 mb-0 py-2">
                     <i className="fas fa-check-circle me-2"></i>
-                    Archivo procesado. Verifique los datos en la tabla.
+                    {translate("formEnsayista.verifique")}
                   </div>
                 )}
               </div>
@@ -785,7 +787,7 @@ export const EnsayeForm = () => {
               <table className="table table-bordered table-hover text-center" id="ensaye-table">
                 <thead className="table-light position-sticky top-0" style={{ zIndex: 1 }}>
                   <tr>
-                    <th style={{ width: '20%' }}>Etapa</th>
+                    <th style={{ width: '20%' }}>{translate("detalles.etapa")}</th>
                     {nombresElementos.map((nombre, index) => (
                       <th key={index} style={{ width: `${80 / nombresElementos.length}%`, minWidth: '100px' }}>{nombre}</th>
                     ))}
@@ -803,7 +805,7 @@ export const EnsayeForm = () => {
                           <div className="d-flex align-items-stretch h-100 d-flex justify-content-center  mt-2"> {/* Asegurar que el div ocupe toda la celda */}
                             <input
                               type="number"
-                              className={`form-control-table ${elemento.existencia_teorica === '' || elemento.existencia_teorica === null ? 'input-empty' : ''}`}
+                              className={`form-control-table fondoCelda ${elemento.existencia_teorica === '' || elemento.existencia_teorica === null ? 'input-empty' : ''}`}
                               value={elemento.existencia_teorica}
                               onChange={(e) => handleCircuitoChange(circuitoIndex, elementoIndex, e.target.value)}
                               onContextMenu={(e) => handleContextMenu(e, circuitoIndex, elementoIndex)}
@@ -818,7 +820,7 @@ export const EnsayeForm = () => {
                             {elemento.existencia_teorica !== '' && elemento.existencia_teorica !== null && (
                               <Button variant="link" className="btn-clear-cell text-danger p-0 px-0"
                                 onClick={() => handleCircuitoChange(circuitoIndex, elementoIndex, '')}
-                                title="Limpiar celda">
+                                title={translate("formEnsayista.limpiarCelda")}>
                                 <i className="fas fa-times-circle"></i>
                               </Button>
                             )}
@@ -832,11 +834,11 @@ export const EnsayeForm = () => {
             </div>
 
             <div className="d-flex justify-content-between mt-4 save-section">
-              <Button variant="outline-secondary" onClick={volverPaso} disabled={isSubmitting}><i className="fas fa-arrow-left me-2"></i>Paso Anterior</Button>
+              <Button className="fondoBtnVista" variant="outline-secondary" onClick={volverPaso} disabled={isSubmitting}><i className="fas fa-arrow-left me-2"></i>{translate("formEnsayista.atras")}</Button>
               <Button id='saveButton' variant="success" onClick={handleShowModal}
                 disabled={isSubmitting || !validarDatosCompletos().esValido}
-                title={!validarDatosCompletos().esValido ? "Complete todos los campos requeridos para guardar." : "Guardar Ensaye"}>
-                <i className="fas fa-save me-2"></i>{isSubmitting ? 'Guardando...' : 'Guardar Ensaye'}
+                title={!validarDatosCompletos().esValido ? "Complete todos los campos requeridos para guardar." : translate("formEnsayista.guardar")}>
+                <i className="fas fa-save me-2"></i>{isSubmitting ? translate("formEnsayista.guardando") : translate("formEnsayista.guardar")}
               </Button>
             </div>
             {showTutorial && <TutorialModalComponent step={tutorialStep} onNext={nextTutorialStep} onPrev={prevTutorialStep} onSkip={skipTutorial} />}
@@ -847,23 +849,23 @@ export const EnsayeForm = () => {
       <Modal show={showConfirmModal} onHide={() => setShowConfirmModal(false)} fullscreen centered>
         <Modal.Header closeButton className="bg-success text-white">
           <Modal.Title className='text-white'>
-            <i className="fas fa-check-circle me-2"></i>Confirmar Datos del Ensaye
+            <i className="fas fa-check-circle me-2"></i>{translate("formEnsayista.confirmar")}
           </Modal.Title>
         </Modal.Header>
-        <Modal.Body className="p-4 bg-light">
+        <Modal.Body className="p-4 bg-gray">
           {/* Información general */}
           <div className="card mb-4 shadow-sm">
             <div className="card-body">
-              <h5 className="card-title fw-bold mb-3">Resumen de Información General</h5>
+              <h5 className="card-title fw-bold mb-3">{translate("formEnsayista.resumen")}</h5>
               <div className="row">
-                <div className="col-md-4 mb-2"><strong>Turno:</strong> {turno}</div>
-                <div className="col-md-4 mb-2"><strong>Tipo Lab.:</strong> {tipoLaboratorio}</div>
-                <div className="col-md-4 mb-2"><strong>Fecha:</strong> {new Date(formData.fecha + 'T00:00:00').toLocaleDateString()}</div>
+                <div className="col-md-4 mb-2"><strong>{translate("detalles.turno")}:</strong> {turno}</div>
+                <div className="col-md-4 mb-2"><strong>{translate("formEnsayista.lab")}:</strong> {tipoLaboratorio}</div>
+                <div className="col-md-4 mb-2"><strong>{translate("ensayesVista.fecha")}:</strong> {new Date(formData.fecha + 'T00:00:00').toLocaleDateString()}</div>
               </div>
               <div className="row mt-2">
-                <div className="col-md-4 mb-2"><strong>Molienda Húmeda:</strong> {formData.molienda_humeda} t/d</div>
-                <div className="col-md-4 mb-2"><strong>Humedad:</strong> {formData.humedad}%</div>
-                <div className="col-md-4 mb-2"><strong>Cabeza General:</strong> {formData.cabeza_general} g/t</div>
+                <div className="col-md-4 mb-2"><strong>{translate("ensayesVista.molienda")}:</strong> {formData.molienda_humeda} t/d</div>
+                <div className="col-md-4 mb-2"><strong>{translate("ensayesVista.humedad")}:</strong> {formData.humedad}%</div>
+                <div className="col-md-4 mb-2"><strong>{translate("ensayesVista.cabeza")}:</strong> {formData.cabeza_general} g/t</div>
               </div>
             </div>
           </div>
@@ -871,12 +873,12 @@ export const EnsayeForm = () => {
           {/* Tabla de circuitos */}
           <div className="card shadow-sm">
             <div className="card-body">
-              <h5 className="card-title fw-bold mb-3">Resumen de Datos de Circuitos</h5>
+              <h5 className="card-title fw-bold mb-3">{translate("formEnsayista.resumen2")}</h5>
               <div className="table-responsive" style={{ maxHeight: '600px' }}>
                 <table className="table table-bordered table-hover text-center align-middle">
                   <thead className="table-light position-sticky top-0">
                     <tr>
-                      <th>Etapa</th>
+                      <th>{translate("detalles.etapa")}</th>
                       {nombresElementos.map(n => (
                         <th key={n}>{n}</th>
                       ))}
@@ -897,13 +899,13 @@ export const EnsayeForm = () => {
             </div>
           </div>
         </Modal.Body>
-        <Modal.Footer className="bg-white">
-          <Button variant="outline-secondary" onClick={() => setShowConfirmModal(false)} disabled={isSubmitting}>
-            <i className="fas fa-edit me-2"></i>Volver a Editar
+        <Modal.Footer className="bg-gray">
+          <Button variant="outline-info" onClick={() => setShowConfirmModal(false)} disabled={isSubmitting}>
+            <i className="fas fa-edit me-2"></i>{translate("formEnsayista.volverEditar")}
           </Button>
           <Button variant="success" onClick={confirmSubmit} disabled={isSubmitting}>
             <i className="fas fa-check-circle me-2"></i>
-            {isSubmitting ? 'Procesando...' : 'Confirmar y Guardar'}
+            {isSubmitting ? 'Procesando...' : translate("formEnsayista.confYguardar")}
           </Button>
         </Modal.Footer>
       </Modal>

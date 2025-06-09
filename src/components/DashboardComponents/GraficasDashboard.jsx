@@ -4,12 +4,14 @@ import { ButtonGroup, Button, Card, Form, Col, Row, Alert } from 'react-bootstra
 import { GraphComponent } from '../GraphComponent'; // Tu componente de Recharts
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { useTranslation } from "react-i18next"; // <-- Solo necesitamos este hook
 
 // Estas constantes podrían venir de un archivo de configuración
 const ALL_AVAILABLE_ELEMENTS = ['Au', 'Ag', 'Cu', 'Pb', 'Zn', 'Fe'];
 const DEFAULT_SELECTED_ELEMENTS = ['Au']; // Elementos mostrados por defecto
 
 export const GraficasDashboard = ({ contenidos, leyes, recuperaciones }) => {
+    const { t, i18n } = useTranslation();
     // Estados para los datos procesados (con todos los elementos de la prop)
     const [datosFuente, setDatosFuente] = useState({
         Recuperaciones: { Fechas: [], ...Object.fromEntries(ALL_AVAILABLE_ELEMENTS.map(el => [el, []])) },
@@ -20,6 +22,12 @@ export const GraficasDashboard = ({ contenidos, leyes, recuperaciones }) => {
     const [selectedGraphType, setSelectedGraphType] = useState('Recuperaciones');
     const [selectedElements, setSelectedElements] = useState([...DEFAULT_SELECTED_ELEMENTS]);
     const [unidadEjeY, setUnidadEjeY] = useState('%'); // Unidad para el eje Y, especialmente para Contenidos/Leyes
+
+    const GRAFICAS = [
+        { key: 'Recuperaciones', label: t('tabs.recuperaciones') },
+        { key: 'Contenidos', label: t('tabs.contenidos') },
+        { key: 'Leyes', label: t('tabs.leyes') },
+    ];
 
     // Función genérica para procesar los datos de las props
     const processRawData = (rawDataArray) => {
@@ -106,13 +114,13 @@ export const GraficasDashboard = ({ contenidos, leyes, recuperaciones }) => {
                     
                     <Col className="d-flex justify-content-end"> {/* Botones a la derecha en desktop */}
                         <ButtonGroup size="sm">
-                            {['Recuperaciones', 'Contenidos', 'Leyes'].map((tipo) => (
+                            {GRAFICAS.map(({ key, label }) => (
                                 <Button
-                                    key={tipo}
-                                    variant={selectedGraphType === tipo ? 'secondary' : 'outline-secondary'}
-                                    onClick={() => setSelectedGraphType(tipo)}
+                                    key={key}
+                                    variant={selectedGraphType === key ? 'info' : 'outline-info'}
+                                    onClick={() => setSelectedGraphType(key)}
                                 >
-                                    {tipo}
+                                    {label}
                                 </Button>
                             ))}
                         </ButtonGroup>
@@ -125,7 +133,7 @@ export const GraficasDashboard = ({ contenidos, leyes, recuperaciones }) => {
                     <Row className="align-items-center">
                         <Col md={12}> {/* O md={8} si quieres un botón de "Aplicar todos" en md={4} */}
                             <Form.Label className="fw-semibold fs-sm mb-2">
-                                Seleccionar Elementos a Graficar:
+                                {t("tablero.cardGrafico.selecciondeElemento")}
                             </Form.Label>
                             <div className="d-flex flex-wrap" style={{ gap: '0.5rem 1rem' }}> {/* Mayor gap horizontal */}
                                 {ALL_AVAILABLE_ELEMENTS.map(el => (
@@ -149,8 +157,8 @@ export const GraficasDashboard = ({ contenidos, leyes, recuperaciones }) => {
                     <Alert variant="info" className="text-center">
                         <i className="fas fa-info-circle me-2"></i>
                         {selectedElements.length === 0
-                            ? "Por favor, selecciona al menos un elemento para visualizar la gráfica."
-                            : "No hay datos disponibles para la gráfica con la selección actual."}
+                            ? t("tablero.cardGrafico.seleccionError")
+                            : t("tablero.cardGrafico.seleccionNohayDatos")}
                     </Alert>
                 ) : (
                     <GraphComponent

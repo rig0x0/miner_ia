@@ -6,10 +6,15 @@ import { CustomSpinner } from '../CustomSpinner';
 import { GraficasDashboard } from './GraficasDashboard';
 import { TableEnsayes } from '../TableEnsayes';
 import { EnsayeCard } from './EnsayeCard';
+import { useTranslation } from "react-i18next"; // <-- Solo necesitamos este hook
+import { enUS, es } from 'date-fns/locale';
+import { format } from 'date-fns';
 
 export const SupervisorDashboard = () => {
+    const { t, i18n } = useTranslation();
 
     const [date, setDate] = useState()
+    const currentLocale = i18n.language === 'es' ? es : enUS;
 
     const getElements = async () => {
         const response = await clienteAxios.get("/dashboard/");
@@ -29,11 +34,11 @@ export const SupervisorDashboard = () => {
             const completados = [...ensayes];
 
             if (!tieneTurno1) {
-                completados.push({ turno: 1, estado: 'pendiente' });
+                completados.push({ turno: 1, estado: t("tablero.cardEnsayesporDia.estatusPendiente") });
             }
 
             if (!tieneTurno2) {
-                completados.push({ turno: 2, estado: 'pendiente' });
+                completados.push({ turno: 2, estado: t("tablero.cardEnsayesporDia.estatusPendiente") });
             }
 
             // Ordenar por turno (1 primero, luego 2)
@@ -46,16 +51,11 @@ export const SupervisorDashboard = () => {
         }
     });
 
-    useEffect(() => {
-        const fechaActual = new Date().toLocaleDateString('es-ES', {
-            weekday: 'long', // "lunes"
-            year: 'numeric', // "2025"
-            month: 'long',   // "junio"
-            day: 'numeric',  // "5"
-        });
-
-        setDate(fechaActual)
-    }, [])
+   const fechaFormateada = format(
+           new Date(),
+           t("detailsEnsaye.dateFormat"),
+           { locale: currentLocale }
+       );
 
     // useEffect(() => {
     //     if (dashboard) {
@@ -69,8 +69,8 @@ export const SupervisorDashboard = () => {
         <div className="container py-4">
             <div className="row">
                 <div className="col-6">
-                    <h1 className="h2 fw-bold">Tablero</h1>
-                    <p className="text-muted">Aquí podrás encontrar un resumen de los datos de balance</p>
+                    <h1 className="h2 fw-bold">{t("tablero.titulo")}</h1>
+                    <p className="text-muted">{t("tablero.descripcionTitulo")}</p>
                 </div>
                 <div className="col-6 d-flex justify-content-end">
 
@@ -79,9 +79,9 @@ export const SupervisorDashboard = () => {
 
             <div className="card my-3 shadow-sm ">
                 <div className="card-body ">
-                    <h4 className='fw-bold'>Ensayes del día</h4>
+                    <h4 className='fw-bold'>{t("tablero.cardEnsayeporDia.titulo")}</h4>
                     <p className=''>
-                        {date}
+                        {fechaFormateada}
                     </p>
                     <div>
                         <div className="row">
@@ -107,7 +107,7 @@ export const SupervisorDashboard = () => {
 
             <div className="card my-3 shadow-sm ">
                 <div className="card-body ">
-                    <h4 className='fw-bold'>Resumen de Ensayes</h4>
+                    <h4 className='fw-bold'>{t("tablero.cardResumenEnsaye.titulo")}</h4>
                     <div>
                         {
                             dashboard.resumen.isError ? (
@@ -128,7 +128,7 @@ export const SupervisorDashboard = () => {
 
             <div className="card my-3 shadow-sm ">
                 <div className="card-body ">
-                    <h4 className='fw-bold'>Gráfico de datos</h4>
+                    <h4 className='fw-bold'>{t("tablero.cardGrafico.titulo")}</h4>
                     <div>
                         {
                             dashboard.recuperaciones.isError ? (

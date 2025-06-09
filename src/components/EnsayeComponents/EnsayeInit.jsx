@@ -7,8 +7,10 @@ import { ToastContainer } from 'react-bootstrap';
 import { Table } from '../Table'
 import { TableTest } from '../TableTest';
 import { ServerSideTable } from '../ServerSideTable';
+import { useTranslation } from "react-i18next"; // <-- Solo necesitamos este hook
 
 export const EnsayeInit = () => {
+    const { t, i18n } = useTranslation();
 
     // const queryClient = useQueryClient();
 
@@ -48,7 +50,7 @@ export const EnsayeInit = () => {
             accessorKey: 'id'
         },
         {
-            header: 'Fecha',
+            header: t("ensayesVista.fecha"),
             accessorKey: 'fecha',
             cell: ({ row }) => {
                 const date = new Date(row.original.fecha);
@@ -56,25 +58,25 @@ export const EnsayeInit = () => {
             }
         },
         {
-            header: 'Turno',
+            header: t("ensayesVista.turno"),
             accessorKey: 'turno'
         },
         {
-            header: 'Tipo de Ensaye',
+            header: t("ensayesVista.tipo"),
             accessorKey: 'tipo_ensaye'
         },
         {
-            header: 'Molienda Húmeda',
+            header: t("ensayesVista.molienda"),
             accessorKey: 'producto.molienda_humeda',
             cell: ({ row }) => row.original.producto?.molienda_humeda?.toFixed(2) || 'N/A'
         },
         {
-            header: 'Humedad',
+            header: t("ensayesVista.humedad"),
             accessorKey: 'producto.humedad',
             cell: ({ row }) => `${row.original.producto?.humedad || 0}%`
         },
         {
-            header: 'Cabeza General',
+            header: t("ensayesVista.cabeza"),
             accessorKey: 'producto.cabeza_general',
             cell: ({ row }) => row.original.producto?.cabeza_general?.toFixed(2) || 'N/A'
         }
@@ -83,20 +85,20 @@ export const EnsayeInit = () => {
     const filtersConfig = [
         {
             id: 'shift',
-            label: 'Turno',
+            label: t("ensayesVista.turno"),
             type: 'select',
             options: [
-                { value: 1, label: 'Turno 1' },
-                { value: 2, label: 'Turno 2' },
+                { value: 1, label: t("ensayesVista.turno1") },
+                { value: 2, label: t("ensayesVista.turno2") },
             ]
         },
         {
             id: 'laboratory',
-            label: 'Laboratorio',
+            label: t("ensayesVista.laboratorio"),
             type: 'select',
             options: [
-                { value: 'Laboratorio Conciliado', label: 'Conciliado' },
-                { value: 'Laboratorio Real', label: 'Real' },
+                { value: 'Laboratorio Conciliado', label: t("ensayesVista.conciliado") },
+                { value: 'Laboratorio Real', label: t("ensayesVista.real") },
             ]
         }
     ];
@@ -133,8 +135,8 @@ export const EnsayeInit = () => {
                 {/* Encabezado */}
                 <div className="row mb-3">
                     <div className="col">
-                        <h1 className="fw-bold">Dashboard de Ensayista</h1>
-                        <p className="text-muted">Gestiona y visualiza los ensayes de laboratorio</p>
+                        <h1 className="fw-bold">{t("ensayista.titulo")}</h1>
+                        <p className="text-muted">{t("ensayista.descripcion")}</p>
                     </div>
                 </div>
 
@@ -150,8 +152,8 @@ export const EnsayeInit = () => {
                                 <div className="card card-hover h-100 shadow-sm cursor-pointer">
                                     <div className="card-body d-flex flex-column justify-content-between text-center">
                                         <div>
-                                            <h3 className="fw-bold">Registrar Nuevo Ensaye</h3>
-                                            <p className="text-muted">Crea un nuevo registro de ensayo</p>
+                                            <h3 className="fw-bold">{t("ensayista.registrar")}</h3>
+                                            <p className="text-muted">{t("ensayista.registrarDescripcion")}</p>
                                         </div>
                                         <div>
                                             <span className="fs-1 fa-solid fa-file-medical card-icon"></span>
@@ -183,7 +185,7 @@ export const EnsayeInit = () => {
                 <div className='mt-4'>
                     <div className="card">
                         <div className="card-header">
-                            <h4 className='fw-bold mb-3'>Historial de Ensayes Registrados</h4>
+                            <h4 className='fw-bold mb-3'>{t("ensayista.cardTitle")}</h4>
                             <ServerSideTable
                                 columns={columns}
                                 fetchData={fetchEnsayes}
