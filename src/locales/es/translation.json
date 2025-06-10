@@ -159,7 +159,17 @@
     "descripcionTendencia": "Interpretación de los datos",
     "tendenciaUp": "Se espera una mejora en la recuperación durante los próximos días.",
     "tendenciaDown": "Se prevé una disminución en la recuperación. Se recomienda revisar los procesos.",
-    "actualizacion": "Última actualización: "
+    "tendenciaStable": "Se observa una estabilidad en la recuperación. Se recomienda mantener y monitorear los procesos actuales.",
+    "actualizacion": "Última actualización: ",
+    "prediccionBasica": "Simple (Datos Insuficientes)",
+    "prediccionRobusta": "Robusta (ML)",
+    "tipoPrediccion": "Tipo de predicción",
+    "modeloML": "Machine Learning",
+    "modeloSimple": "Naive Forecast",
+    "tendenciaAlta": "Alza",
+    "tendenciaBaja": "Baja",
+    "tendenciaEstable": "Estable",
+    "descEstable": ""
   },
   "reportes": {
     "errorFechaInicio": "La fecha de inicio es obligatoria.",

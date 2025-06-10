@@ -54,7 +54,7 @@ export const AuthProvider = ({ children }) => {
                     navigate("/ensayes", { replace: true });
                     break;
                 case "Ensayista":
-                    navigate("/ensaye", { replace: true });
+                    navigate("/dashboard-ensayista", { replace: true });
                 default:
                     break;
             }

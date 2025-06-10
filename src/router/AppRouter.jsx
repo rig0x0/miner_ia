@@ -93,7 +93,7 @@ export const AppRouter = () => {
         {/* <Route path="/usuarios" element={<Users />} /> */}
         {/* Rutas de Ensayista */}
         <Route
-          path="/ensaye"
+          path="/dashboard-ensayista"
           element={
             <ProtectedRoute>
               <RoleBasedRoute allowedRoles={['Ensayista']}>

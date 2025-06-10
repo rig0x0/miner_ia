@@ -3,7 +3,7 @@ import { Card, Table, Badge, Button, ButtonGroup, Tab, Tabs } from 'react-bootst
 import { format } from 'date-fns';
 import clienteAxios from '../../config/axios';
 import { useQuery } from '@tanstack/react-query';
-import { useParams } from 'react-router';
+import { Link, useNavigate, useParams } from 'react-router';
 import { enUS, es } from 'date-fns/locale';
 import {
     BarChart,
@@ -54,6 +54,13 @@ export const DetailsEnsaye = () => {
     const [activeElementoTab, setActiveElementoTab] = useState("1");
 
     const currentLocale = i18n.language === 'es' ? es : enUS;
+
+    // 1. Obtenemos la función de navegación
+    const navigate = useNavigate();
+
+    const handleGoBack = () => {
+        navigate(-1);
+    };
 
     const getElements = async (id) => {
         const { data } = await clienteAxios.get(`/ensaye/${id}`);
@@ -114,11 +121,8 @@ export const DetailsEnsaye = () => {
     return (
         <div className="container py-4">
 
-            <nav className="mb-3" aria-label="breadcrumb">
-                <ol className="breadcrumb mb-0">
-                    <li className="breadcrumb-item"><a href="/dashboard">{t("detalles.back")}</a></li>
-                </ol>
-            </nav>
+            <Link className="btn fondoBtnVista btn-outline-secondary mb-3" onClick={handleGoBack}><i class="fa-solid fa-arrow-left"></i>  {t("detalles.back")}</Link>
+
 
             <h1 className="h3 fw-bold">{t("detalles.title")}</h1>
             <p className="text-muted">{t("detalles.descripcion")}</p>
@@ -126,7 +130,7 @@ export const DetailsEnsaye = () => {
             <Badge bg="success" className="mt-0">{tiposEnsayeTraducidos[detallesEnsaye.tipo_ensaye] || detallesEnsaye.tipo_ensaye}</Badge>
             <p className="text-muted"><i className="fas fa-calendar me-2" />{fechaFormateada}</p>
             <p>{t("detalles.ensayista")} {detallesEnsaye.user.name}</p>
-            
+
             <div className="row row-cols-1 row-cols-md-3 g-3 mb-3">
                 <div className="col">
                     <div className="card p-3 shadow-sm">
@@ -329,7 +333,7 @@ export const DetailsEnsaye = () => {
                 </div>
 
                 {vistaContenidos === "tabla" && (
-                    
+
                     <Table striped hover responsive className="table-sm">
                         <thead>
                             <tr>
@@ -438,7 +442,7 @@ export const DetailsEnsaye = () => {
                 </div>
 
                 {vistaDistribucion === "tabla" && (
-                    
+
                     <Table striped hover responsive className="table-sm">
                         <thead>
                             <tr>

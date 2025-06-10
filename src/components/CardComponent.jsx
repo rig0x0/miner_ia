@@ -64,7 +64,7 @@ export const CardComponent = ({ elementos }) => {
                 <Col key={idx}>
                     <Card>
                         <Card.Body className='pb-0'>
-                            <Card.Title style={{ fontSize: '19px' }}>
+                            <Card.Title style={{ fontSize: '20px' }}>
                                 <span style={{ color: colores[item.elemento] || "black", fontWeight: "bold" }}>
                                     {item.elemento}
                                 </span>
@@ -73,7 +73,7 @@ export const CardComponent = ({ elementos }) => {
   {nombres[item.elemento] || "Desconocido"}
 </span>
                             </Card.Title>
-                            <Card.Text style={{ fontSize: '10px' }}>
+                            <Card.Text style={{ fontSize: '15px' }}>
                                 <Table className="text-center">
                                     <thead>
                                         <tr>

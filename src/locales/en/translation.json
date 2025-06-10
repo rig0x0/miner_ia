@@ -159,7 +159,14 @@
     "descripcionTendencia": "Data interpretation",
     "tendenciaUp": "An improvement in recovery is expected over the next few days.",
     "tendenciaDown": "A decrease in recovery is forecasted. It is recommended to review the processes.",
-    "actualizacion": "Last update: "
+    "tendenciaStable": "Recovery stability is observed. Maintaining and monitoring current processes is recommended.",
+    "actualizacion": "Last update: ",
+    "prediccionBasica": "Simple (Insufficient Data)",
+    "prediccionRobusta": "Robust (ML)",
+    "tipoPrediccion": "Type of prediction",
+    "tendenciaAlta": "High",
+    "tendenciaBaja": "Down",
+    "tendenciaEstable": "Stable"
   },
   "reportes": {
     "errorFechaInicio": "Start date is required.",

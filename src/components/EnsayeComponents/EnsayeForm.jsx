@@ -50,6 +50,10 @@ export const EnsayeForm = () => {
   const tutorialRef = useRef(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // NUEVO: Estados para el modo de enfoque de la tabla
+  const [modoEnfoque, setModoEnfoque] = useState('libre'); // 'libre', 'fila', 'columna'
+  const [indiceEnfoque, setIndiceEnfoque] = useState(null);
+
   const TUTORIAL_STORAGE_KEY = 'ensayeTutorialVisto';
 
   useEffect(() => {
@@ -236,11 +240,11 @@ export const EnsayeForm = () => {
         procesarDatosImportados(jsonData); // Esta función ya muestra Swal de éxito/error
       } catch (error) {
         console.error('Error al leer archivo:', error);
-        Swal.fire(t("mensajes.errorLectura"), t("mensajes.errorLectura2"), "error");
+        Swal.fire(translate("mensajes.errorLectura"), translate("mensajes.errorLectura2"), "error");
       }
     };
     reader.onerror = () => {
-      Swal.fire(t("mensajes.errorArchivo"), t("mensajes.errorArchivo2"), "error");
+      Swal.fire(translate("mensajes.errorArchivo"), translate("mensajes.errorArchivo2"), "error");
     };
     reader.readAsArrayBuffer(file);
   };
@@ -298,10 +302,10 @@ export const EnsayeForm = () => {
 
       setCircuitos(nuevosCircuitos);
       setArchivoCargado(true);
-      Swal.fire(t("mensaje.exito"), `${datosImportadosCount} valore(s) importado(s) satisfactoriamente.`, "success");
+      Swal.fire(translate("mensaje.exito"), `${datosImportadosCount} valore(s) importado(s) satisfactoriamente.`, "success");
     } catch (error) {
       console.error('Error al procesar archivo:', error);
-      Swal.fire(t("mensajes.error"), error.message || t("mensajes.errorMensaje"), "error");
+      Swal.fire(translate("mensajes.error"), error.message || t("mensajes.errorMensaje"), "error");
     } finally {
       if (fileInputRef.current) fileInputRef.current.value = ''; // Limpiar el input de archivo
     }
@@ -381,15 +385,9 @@ export const EnsayeForm = () => {
 
     Swal.fire({
       title: 'Registrando Ensaye...',
-      html: currentHtml,
+      html: currentHtml, // Asumo que 'currentHtml' está definida en tu código
       allowOutsideClick: false,
       showConfirmButton: false,
-      didOpen: () => {
-        // Solo mostramos el loading para el estado inicial
-        if (swalInstance.isLoading !== undefined) {
-          Swal.showLoading();
-        }
-      }
     });
     // Luego para trabajar correctamente:
     const [y, m, d] = formData.fecha.split('-').map(Number);
@@ -419,6 +417,7 @@ export const EnsayeForm = () => {
         headers: { 'Content-Type': 'application/json' }
       });
 
+      console.log(response.data)
       if (response.status !== 201) {
         Swal.fire({
           icon: 'error',
@@ -520,9 +519,6 @@ export const EnsayeForm = () => {
               finalIcon = 'warning';
             }
 
-
-
-
             // Actualizamos el Swal manteniendo el HTML actualizado
             Swal.update({
               title: finalTitle,
@@ -534,7 +530,7 @@ export const EnsayeForm = () => {
 
             socket.close();
 
-            navigate('/ensaye');
+            navigate('/dashboard-ensayista');
           }
         } catch (e) {
           console.error("Error al procesar mensaje WebSocket:", e);
@@ -573,7 +569,7 @@ export const EnsayeForm = () => {
       Swal.fire({
         icon: 'error',
         title: 'Error inesperado',
-        text: 'No se pudo registrar el ensaye. Intenta nuevamente.',
+        text: error.response.data.detail || 'No se pudo registrar el ensaye. Intente nuevamente.',
       });
       setIsSubmitting(false);
     }
@@ -625,7 +621,7 @@ export const EnsayeForm = () => {
           <div className="d-flex justify-content-between mt-4">
             <div>{step > 1 && (<Button variant="outline-secondary" size="sm" onClick={onPrev}>Anterior</Button>)}</div>
             <div>
-              <Button  variant="outline-secondary" size="sm" onClick={onSkip} className="me-2 fondoBtnVista">Saltar Tutorial</Button>
+              <Button variant="outline-secondary" size="sm" onClick={onSkip} className="me-2 fondoBtnVista">Saltar Tutorial</Button>
               <Button variant="primary" size="sm" onClick={onNext}>
                 {step === steps.length ? 'Finalizar' : 'Siguiente'}
               </Button>
@@ -635,6 +631,22 @@ export const EnsayeForm = () => {
         </div>
       </div>
     );
+  };
+
+  // NUEVO: Manejador para cambiar el modo de enfoque
+  const handleModoEnfoqueChange = (modo) => {
+    setModoEnfoque(modo);
+    // Reiniciar el índice y la celda activa al cambiar de modo
+    // y establecer un índice por defecto para los modos de fila/columna
+    if (modo === 'fila') {
+      setIndiceEnfoque(0);
+      setActiveCell({ row: 0, col: 0 });
+    } else if (modo === 'columna') {
+      setIndiceEnfoque(0);
+      setActiveCell({ row: 0, col: 0 });
+    } else {
+      setIndiceEnfoque(null);
+    }
   };
 
   const cardBaseStyle = { transition: 'all 0.2s ease-in-out', cursor: 'pointer', height: '100%' };
@@ -652,7 +664,7 @@ export const EnsayeForm = () => {
     <div className="container py-4" style={{ maxWidth: '100%' }}>
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h1 className='text-center fw-bold mb-0 h2'>{translate("formEnsayista.title1")}</h1>
-        <Link to="/ensaye" className="btn fondoBtnVista btn-outline-secondary">
+        <Link to="/dashboard-ensayista" className="btn fondoBtnVista btn-outline-secondary">
           <i className="fas fa-arrow-left me-2"></i> {translate("formEnsayista.volver")}
         </Link>
       </div>
@@ -722,9 +734,9 @@ export const EnsayeForm = () => {
             <h3 className="fw-bold text-center mb-4 text-primary"><span className="badge bg-primary me-2">3</span>{translate("formEnsayista.title3")}</h3>
             <p className="text-center text-muted mb-4"><small>{translate("formEnsayista.descripcion1")} <span className="text-danger">*</span> {translate("formEnsayista.descripcion2")}</small></p>
             <div className="row g-3">
-              {[{ name: 'molienda_humeda', label: translate("ensayesVista.molienda") +' (t/d)', placeholder: 'Ej: 2041.32', type: 'number', step: "0.01" },
-              { name: 'humedad', label: translate("ensayesVista.humedad")+' (%)', placeholder: 'Ej: 3.0', type: 'number', step: "0.1", max: "100" },
-              { name: 'cabeza_general', label: translate("ensayesVista.cabeza")+' (g/t)', placeholder: 'Ej: 1.50', type: 'number', step: "0.01" }
+              {[{ name: 'molienda_humeda', label: translate("ensayesVista.molienda") + ' (t/d)', placeholder: 'Ej: 2041.32', type: 'number', step: "0.01" },
+              { name: 'humedad', label: translate("ensayesVista.humedad") + ' (%)', placeholder: 'Ej: 3.0', type: 'number', step: "0.1", max: "100" },
+              { name: 'cabeza_general', label: translate("ensayesVista.cabeza") + ' (g/t)', placeholder: 'Ej: 1.50', type: 'number', step: "0.01" }
               ].map(field => (
                 <div className="col-md-4" key={field.name}>
                   <label className="form-label fw-semibold">{field.label} <span className="text-danger">*</span></label>
@@ -756,30 +768,85 @@ export const EnsayeForm = () => {
 
           {/* Paso 4: Circuitos y elementos */}
           <div style={{ display: paso === 4 ? 'block' : 'none', animation: paso === 4 ? 'fadeIn 0.5s ease' : '' }}>
-            <h3 className="fw-bold text-center mb-4 text-primary"><span className="badge bg-primary me-2">4</span>{translate("formEnsayista.title4")}</h3>
+            <h3 className="fw-bold text-center mb-4 text-primary"><span className="badge bg-primary me-2">4</span>Datos de Circuitos y Elementos</h3>
+
+            {/* NUEVO: Sección de resumen de datos seleccionados */}
+            <div className="card mb-4 border-light shadow-sm">
+              <div className="card-header bg-light-subtle d-flex justify-content-between align-items-center">
+                <h5 className="mb-0 fw-bold text-secondary">Resumen de Selección</h5>
+                <Button variant="link" size="sm" className="text-decoration-none" onClick={() => setPaso(1)}>
+                  <i className="fas fa-edit me-1"></i> Modificar
+                </Button>
+              </div>
+              <div className="card-body p-3">
+                <div className="row g-3">
+                  <div className="col-md-3"><strong><i className="fas fa-sun me-2 text-warning"></i>Turno:</strong><span className="badge bg-secondary ms-2">{turno}</span></div>
+                  <div className="col-md-3"><strong><i className="fas fa-flask me-2 text-info"></i>Tipo Lab:</strong><span className="badge bg-secondary ms-2">{tipoLaboratorio}</span></div>
+                  <div className="col-md-3"><strong><i className="fas fa-calendar-alt me-2 text-success"></i>Fecha:</strong><span className="badge bg-secondary ms-2">{new Date(formData.fecha + 'T00:00:00').toLocaleDateString()}</span></div>
+                  <div className="col-md-3"><strong><i className="fas fa-weight-hanging me-2 text-danger"></i>Molienda:</strong><span className="badge bg-secondary ms-2">{formData.molienda_humeda} t/d</span></div>
+                  <div className="col-md-3"><strong><i className="fas fa-tint me-2 text-primary"></i>Humedad:</strong><span className="badge bg-secondary ms-2">{formData.humedad} %</span></div>
+                  <div className="col-md-3"><strong><i className="fas fa-coins me-2 text-gold"></i>Cabeza Gral:</strong><span className="badge bg-secondary ms-2">{formData.cabeza_general} g/t</span></div>
+                </div>
+              </div>
+            </div>
+
             <div className="card mb-4 border-primary-subtle import-section">
               <div className="card-body" id='importar-archivo'>
-                <h5 className="fw-bold mb-3 text-primary">{translate("formEnsayista.importar")}</h5>
+                <h5 className="fw-bold mb-3 text-primary">Importar Datos desde Excel</h5>
                 <div className="row align-items-center g-2">
                   <div className="col-md-7 mb-2 mb-md-0">
                     <div className="input-group">
                       <input type="file" className="form-control" accept=".xlsx,.xls,.csv" onChange={handleFileImport} ref={fileInputRef} />
-                      <Button className="fondoBtnVista" variant="outline-secondary" onClick={() => { fileInputRef.current.value = ''; setArchivoCargado(false); }}>{translate("formEnsayista.limpiar")}</Button>
+                      <Button variant="outline-secondary" onClick={() => { fileInputRef.current.value = ''; setArchivoCargado(false); }}>Limpiar</Button>
                     </div>
-                    <small className="form-text text-muted">{translate("formEnsayista.formatos")}: .xlsx, .xls, .csv</small>
+                    <small className="form-text text-muted">Formatos: .xlsx, .xls, .csv</small>
                   </div>
                   <div className="col-md-5 text-md-end">
                     <Button variant="outline-info" onClick={descargarPlantilla}>
-                      <i className="fas fa-file-download me-2"></i>{translate("formEnsayista.descargar")}
+                      <i className="fas fa-file-download me-2"></i>Descargar Plantilla
                     </Button>
                   </div>
                 </div>
                 {archivoCargado && (
                   <div className="alert alert-success mt-3 mb-0 py-2">
                     <i className="fas fa-check-circle me-2"></i>
-                    {translate("formEnsayista.verifique")}
+                    Archivo procesado. Verifique los datos en la tabla.
                   </div>
                 )}
+              </div>
+            </div>
+
+            {/* NUEVO: Controles para el modo de llenado de la tabla */}
+            <div className="card mb-3">
+              <div className="card-body bg-light rounded-3 p-3">
+                <div className="row g-3 align-items-end">
+                  <div className="col-md-4">
+                    <label htmlFor="modoEnfoqueSelect" className="form-label fw-semibold mb-1"><i className="fas fa-filter me-2"></i>Modo de Llenado:</label>
+                    <select id="modoEnfoqueSelect" className="form-select" value={modoEnfoque} onChange={(e) => handleModoEnfoqueChange(e.target.value)}>
+                      <option value="libre">Llenado Libre (Clásico)</option>
+                      <option value="fila">Enfocar por Fila (Etapa)</option>
+                      <option value="columna">Enfocar por Columna (Elemento)</option>
+                    </select>
+                  </div>
+
+                  {modoEnfoque === 'fila' && (
+                    <div className="col-md-5">
+                      <label htmlFor="filaSelect" className="form-label fw-semibold mb-1">Seleccionar Etapa:</label>
+                      <select id="filaSelect" className="form-select" value={indiceEnfoque} onChange={e => setIndiceEnfoque(parseInt(e.target.value, 10))}>
+                        {circuitos.map((c, index) => <option key={index} value={index}>{c.etapa}</option>)}
+                      </select>
+                    </div>
+                  )}
+
+                  {modoEnfoque === 'columna' && (
+                    <div className="col-md-5">
+                      <label htmlFor="columnaSelect" className="form-label fw-semibold mb-1">Seleccionar Elemento:</label>
+                      <select id="columnaSelect" className="form-select" value={indiceEnfoque} onChange={e => setIndiceEnfoque(parseInt(e.target.value, 10))}>
+                        {nombresElementos.map((nombre, index) => <option key={index} value={index}>{nombre}</option>)}
+                      </select>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 
@@ -787,58 +854,68 @@ export const EnsayeForm = () => {
               <table className="table table-bordered table-hover text-center" id="ensaye-table">
                 <thead className="table-light position-sticky top-0" style={{ zIndex: 1 }}>
                   <tr>
-                    <th style={{ width: '20%' }}>{translate("detalles.etapa")}</th>
+                    <th style={{ width: '20%' }}>Etapa</th>
                     {nombresElementos.map((nombre, index) => (
-                      <th key={index} style={{ width: `${80 / nombresElementos.length}%`, minWidth: '100px' }}>{nombre}</th>
+                      <th key={index}
+                        style={{ width: `${80 / nombresElementos.length}%`, minWidth: '100px' }}
+                        className={modoEnfoque === 'columna' && indiceEnfoque === index ? 'table-primary' : ''}>
+                        {nombre}
+                      </th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
-                  {circuitos.map((circuito, circuitoIndex) => (
-                    <tr key={circuitoIndex}>
-                      <td className="fw-semibold align-middle bg-light-subtle">{circuito.etapa}</td>
-                      {circuito.elementos.map((elemento, elementoIndex) => (
-                        <td key={elementoIndex} className={`p-0 position-relative ${activeCell.row === circuitoIndex && activeCell.col === elementoIndex ? 'cell-active' : ''}`}
-                          tabIndex={-1} // Quitar tabIndex de la celda, manejar foco solo en input
-                          onKeyDown={(e) => handleKeyDown(e, circuitoIndex, elementoIndex)}
-                        >
-                          <div className="d-flex align-items-stretch h-100 d-flex justify-content-center  mt-2"> {/* Asegurar que el div ocupe toda la celda */}
-                            <input
-                              type="number"
-                              className={`form-control-table fondoCelda ${elemento.existencia_teorica === '' || elemento.existencia_teorica === null ? 'input-empty' : ''}`}
-                              value={elemento.existencia_teorica}
-                              onChange={(e) => handleCircuitoChange(circuitoIndex, elementoIndex, e.target.value)}
-                              onContextMenu={(e) => handleContextMenu(e, circuitoIndex, elementoIndex)}
-                              onDoubleClick={(e) => handleDoubleClick(e, circuitoIndex, elementoIndex)}
-                              onFocus={(e) => { e.target.select(); setActiveCell({ row: circuitoIndex, col: elementoIndex }); }}
-                              step="0.001" min="0" placeholder="0.00"
-                              ref={(el) => {
-                                if (!inputRefs.current[circuitoIndex]) inputRefs.current[circuitoIndex] = [];
-                                inputRefs.current[circuitoIndex][elementoIndex] = el;
-                              }}
-                            />
-                            {elemento.existencia_teorica !== '' && elemento.existencia_teorica !== null && (
-                              <Button variant="link" className="btn-clear-cell text-danger p-0 px-0"
-                                onClick={() => handleCircuitoChange(circuitoIndex, elementoIndex, '')}
-                                title={translate("formEnsayista.limpiarCelda")}>
-                                <i className="fas fa-times-circle"></i>
-                              </Button>
-                            )}
-                          </div>
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
+                  {circuitos.map((circuito, circuitoIndex) => {
+                    const isFilaEnfocada = modoEnfoque === 'fila' && indiceEnfoque === circuitoIndex;
+                    return (
+                      <tr key={circuitoIndex} className={isFilaEnfocada ? 'table-primary' : ''}>
+                        <td className="fw-semibold align-middle bg-light-subtle">{circuito.etapa}</td>
+                        {circuito.elementos.map((elemento, elementoIndex) => {
+                          const isColumnaEnfocada = modoEnfoque === 'columna' && indiceEnfoque === elementoIndex;
+                          const isCeldaHabilitada = modoEnfoque === 'libre' || isFilaEnfocada || isColumnaEnfocada;
+                          return (
+                            <td key={elementoIndex}
+                              className={`p-0 position-relative ${activeCell.row === circuitoIndex && activeCell.col === elementoIndex ? 'cell-active' : ''} ${!isCeldaHabilitada ? 'cell-disabled' : ''}`}
+                              onKeyDown={(e) => handleKeyDown(e, circuitoIndex, elementoIndex)}
+                            >
+                              <div className="d-flex align-items-stretch h-100 d-flex justify-content-center mt-2">
+                                <input
+                                  type="number"
+                                  className={`form-control-table ${elemento.existencia_teorica === '' || elemento.existencia_teorica === null ? 'input-empty' : ''}`}
+                                  value={elemento.existencia_teorica}
+                                  onChange={(e) => handleCircuitoChange(circuitoIndex, elementoIndex, e.target.value)}
+                                  onFocus={(e) => { e.target.select(); setActiveCell({ row: circuitoIndex, col: elementoIndex }); }}
+                                  step="0.001" min="0" placeholder="0.00"
+                                  ref={(el) => {
+                                    if (!inputRefs.current[circuitoIndex]) inputRefs.current[circuitoIndex] = [];
+                                    inputRefs.current[circuitoIndex][elementoIndex] = el;
+                                  }}
+                                  disabled={!isCeldaHabilitada}
+                                />
+                                {elemento.existencia_teorica !== '' && elemento.existencia_teorica !== null && isCeldaHabilitada && (
+                                  <Button variant="link" className="btn-clear-cell text-danger p-0 px-0"
+                                    onClick={() => handleCircuitoChange(circuitoIndex, elementoIndex, '')}
+                                    title="Limpiar celda">
+                                    <i className="fas fa-times-circle"></i>
+                                  </Button>
+                                )}
+                              </div>
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
 
             <div className="d-flex justify-content-between mt-4 save-section">
-              <Button className="fondoBtnVista" variant="outline-secondary" onClick={volverPaso} disabled={isSubmitting}><i className="fas fa-arrow-left me-2"></i>{translate("formEnsayista.atras")}</Button>
+              <Button variant="outline-secondary" onClick={volverPaso} disabled={isSubmitting}><i className="fas fa-arrow-left me-2"></i>Paso Anterior</Button>
               <Button id='saveButton' variant="success" onClick={handleShowModal}
                 disabled={isSubmitting || !validarDatosCompletos().esValido}
-                title={!validarDatosCompletos().esValido ? "Complete todos los campos requeridos para guardar." : translate("formEnsayista.guardar")}>
-                <i className="fas fa-save me-2"></i>{isSubmitting ? translate("formEnsayista.guardando") : translate("formEnsayista.guardar")}
+                title={!validarDatosCompletos().esValido ? "Complete todos los campos requeridos para guardar." : "Guardar Ensaye"}>
+                <i className="fas fa-save me-2"></i>{isSubmitting ? 'Guardando...' : 'Guardar Ensaye'}
               </Button>
             </div>
             {showTutorial && <TutorialModalComponent step={tutorialStep} onNext={nextTutorialStep} onPrev={prevTutorialStep} onSkip={skipTutorial} />}
@@ -1042,6 +1119,56 @@ export const EnsayeForm = () => {
         .tutorial-overlay-ensaye { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 1045; }
         .tutorial-highlight-ensaye { border: 3px solid #0d6efd; border-radius: 5px; box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.6); z-index: 1048; pointer-events: none; transition: all 0.3s ease-in-out; }
         .tutorial-step-ensaye { background-color: white; border-radius: 8px; padding: 20px; max-width: 380px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); z-index: 1050; pointer-events: auto; border-top: 4px solid #0d6efd;}
+
+         /* NUEVO: Estilos para el enfoque de la tabla */
+            .cell-disabled .form-control-table {
+                background-color: #f8f9fa !important;
+                cursor: not-allowed;
+                pointer-events: none;
+                opacity: 0.6;
+            }
+            .table-primary, .table-primary > th, .table-primary > td {
+                background-color: #cfe2ff !important;
+                color: #000;
+            }
+             .form-control-table {
+                flex-grow: 1;
+                max-width: 130px;
+                min-width: 60px;
+                border: 1px solid #dce4ec;
+                border-radius: 20px;
+                padding: 7px 10px;
+                text-align: center;
+                background-color: #f8faff;
+                color: #4B5563;
+                font-size: 0.875rem;
+                box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+                transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+                appearance: textfield;
+                height: auto;
+            }
+            .btn-clear-cell {
+                visibility: hidden;
+                opacity: 0;
+                transition: all 0.2s ease-in-out;
+                color: #A0AEC0;
+                background-color: #f0f4f8;
+                border: 1px solid #d1d9e2;
+                border-radius: 50%;
+                width: 22px;
+                height: 22px;
+                font-size: 0.7rem;
+                line-height: 20px;
+                text-align: center;
+                cursor: pointer;
+                margin-left: 6px;
+                box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+            }
+            #ensaye-table td:hover .btn-clear-cell,
+            #ensaye-table td:focus-within .btn-clear-cell {
+                visibility: visible;
+                opacity: 1;
+            }
       `}</style>
     </div>
   );
