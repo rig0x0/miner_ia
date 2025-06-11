@@ -27,7 +27,7 @@ export const AuthProvider = ({ children }) => {
             formData.append('password', credentials.password);
 
             // No necesitamos la respuesta aquí, solo saber si fue exitosa
-            const response = await axios.post('/auth/token', formData, {
+            const response = await clienteAxios.post('/auth/token', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
 
