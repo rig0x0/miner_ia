@@ -6,8 +6,8 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
-src/assets/*
-src/vendors/*
+# src/assets/*
+# src/vendors/*
 node_modules
 dist
 dist-ssr
